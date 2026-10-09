@@ -1,0 +1,44 @@
+---
+/**
+ * Team — User Story 2 (FR-008 … FR-012).
+ *
+ * Carries the #noi-dung anchor: this is the first real content after the hero,
+ * so it is where the skip link and the scroll cue both land.
+ */
+import { site } from '~/content/site';
+import TeamMemberCard from '~/components/astro/TeamMemberCard.astro';
+import ScrollReveal from '~/components/astro/ScrollReveal.astro';
+import LeafPair from '~/assets/svg/plants/LeafPair.astro';
+---
+
+<section
+  id="noi-dung"
+  aria-labelledby="gieo-team-heading"
+  class="relative scroll-mt-8 overflow-hidden py-20 sm:py-28"
+>
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
+    <LeafPair
+      size={88}
+      class="anim-drift anim-delay-1 absolute -right-4 top-10 hidden text-sprout-200 opacity-70 md:block"
+    />
+  </div>
+
+  <div class="section-shell relative z-10">
+    <h2
+      id="gieo-team-heading"
+      class="text-center font-display text-3xl font-semibold text-sprout-900 sm:text-4xl"
+    >
+      {site.team.heading}
+    </h2>
+
+    <div class="mt-12 grid gap-6 md:grid-cols-2 md:gap-8">
+      {
+        site.team.members.map((member, index) => (
+          <ScrollReveal delay={index * 0.12} class="h-full">
+            <TeamMemberCard member={member} />
+          </ScrollReveal>
+        ))
+      }
+    </div>
+  </div>
+</section>

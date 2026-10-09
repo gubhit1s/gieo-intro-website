@@ -1,0 +1,63 @@
+---
+/**
+ * Course — User Story 3 (FR-017 … FR-019, FR-033 … FR-036).
+ *
+ * The CTA sits directly below the outcome list and is styled as the section's
+ * primary action. It is deliberately inert in this release.
+ */
+import { site } from '~/content/site';
+import OutcomeItem from '~/components/astro/OutcomeItem.astro';
+import CallToActionButton from '~/components/react/CallToActionButton.tsx';
+import ScrollReveal from '~/components/astro/ScrollReveal.astro';
+import Sprout from '~/assets/svg/plants/Sprout.astro';
+import FallingSeed from '~/assets/svg/plants/FallingSeed.astro';
+---
+
+<section
+  id="khoa-hoc"
+  aria-labelledby="gieo-course-heading"
+  class="relative overflow-hidden py-20 sm:py-28"
+>
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
+    <Sprout
+      size={90}
+      class="anim-sway absolute -right-2 top-16 hidden text-sprout-300 opacity-60 lg:block"
+    />
+    <FallingSeed size={18} class="anim-fall absolute left-[12%] top-0 text-sprout-400 opacity-50" />
+    <FallingSeed
+      size={14}
+      class="anim-fall anim-delay-2 absolute right-[18%] top-0 text-sprout-300 opacity-50"
+    />
+  </div>
+
+  <div class="section-shell relative z-10">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2
+        id="gieo-course-heading"
+        class="font-display text-3xl font-semibold text-sprout-900 sm:text-4xl"
+      >
+        {site.course.heading}
+      </h2>
+      <p class="mt-4 text-base leading-relaxed text-ink-muted sm:text-lg">
+        {site.course.description}
+      </p>
+    </div>
+
+    {/* The whole list is revealed as one unit. Wrapping each item would put a
+        non-list-item child inside the list, breaking the list semantics that
+        FR-031 depends on. The reveal wrapper must stay outside. */}
+    <ScrollReveal class="mx-auto mt-12 block max-w-4xl">
+      <ul class="grid gap-4 sm:grid-cols-2">
+        {site.course.outcomes.map((outcome) => <OutcomeItem outcome={outcome} />)}
+      </ul>
+    </ScrollReveal>
+
+    <div class="mt-12 flex justify-center">
+      <CallToActionButton
+        client:visible
+        label={site.course.cta.label}
+        destination={site.course.cta.destination}
+      />
+    </div>
+  </div>
+</section>

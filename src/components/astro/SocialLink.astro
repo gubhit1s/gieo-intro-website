@@ -1,0 +1,30 @@
+---
+/**
+ * One outbound social link (FR-021, FR-023, FR-031).
+ *
+ * target="_blank" and rel="noopener noreferrer" are emitted unconditionally, so
+ * the landing page always stays open behind the new tab. The accessible name
+ * comes from the content label — the icon is aria-hidden, and the label uses
+ * .sr-only (never display:none) so it stays in the accessibility tree.
+ */
+import type { SocialLink } from '~/content/types';
+import FacebookIcon from '~/assets/svg/social/FacebookIcon.astro';
+import TikTokIcon from '~/assets/svg/social/TikTokIcon.astro';
+
+interface Props {
+  link: SocialLink;
+}
+
+const { link } = Astro.props;
+const Icon = link.platform === 'facebook' ? FacebookIcon : TikTokIcon;
+---
+
+<a
+  href={link.url}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-sprout-200 bg-white text-sprout-700 transition-colors hover:bg-sprout-100 hover:text-sprout-800"
+>
+  <Icon size={20} />
+  <span class="sr-only">{link.label}</span>
+</a>

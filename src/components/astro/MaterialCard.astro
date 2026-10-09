@@ -1,0 +1,43 @@
+---
+/**
+ * One free-material entry (FR-015, FR-016).
+ *
+ * Two render paths, both already written:
+ *   href === null  → a non-interactive <article>. No <a>, no click handler, no
+ *                    focus stop, no pointer cursor. This is the placeholder
+ *                    state for this release.
+ *   href is a URL  → an <a>. Supplying a real URL in site.ts switches the card
+ *                    over with no other change.
+ *
+ * There is deliberately no code path that emits href="#" or href="" — that is
+ * how FR-015's "no dead end" is guaranteed structurally rather than by care.
+ */
+import type { MaterialEntry } from '~/content/types';
+import FallingSeed from '~/assets/svg/plants/FallingSeed.astro';
+
+interface Props {
+  entry: MaterialEntry;
+}
+
+const { entry } = Astro.props;
+
+const shellClass =
+  'flex h-full flex-col rounded-2xl border border-sprout-200 bg-white p-6 transition-shadow';
+const interactiveClass = 'hover:shadow-md focus-visible:shadow-md';
+---
+
+{
+  entry.href ? (
+    <a href={entry.href} class={`${shellClass} ${interactiveClass}`}>
+      <FallingSeed size={22} class="mb-4 text-sprout-500" />
+      <h3 class="font-display text-lg font-semibold text-sprout-900">{entry.title}</h3>
+      <p class="mt-2 text-sm leading-relaxed text-ink-muted">{entry.description}</p>
+    </a>
+  ) : (
+    <article class={shellClass}>
+      <FallingSeed size={22} class="mb-4 text-sprout-500" />
+      <h3 class="font-display text-lg font-semibold text-sprout-900">{entry.title}</h3>
+      <p class="mt-2 text-sm leading-relaxed text-ink-muted">{entry.description}</p>
+    </article>
+  )
+}

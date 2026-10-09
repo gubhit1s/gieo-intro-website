@@ -1,0 +1,63 @@
+---
+/**
+ * Hero — User Story 1 (FR-004 … FR-007).
+ *
+ * Brand mark, brand name, the single <h1> and a scroll cue, all within the
+ * first viewport. The headline text is rendered into the static HTML by the
+ * island's server render, so it is present before any JavaScript executes.
+ */
+import { site } from '~/content/site';
+import GieoLogo from '~/assets/svg/GieoLogo.astro';
+import Sprout from '~/assets/svg/plants/Sprout.astro';
+import LeafPair from '~/assets/svg/plants/LeafPair.astro';
+import GrassTuft from '~/assets/svg/plants/GrassTuft.astro';
+import HeroHeadline from '~/components/astro/HeroHeadline.astro';
+import ScrollCue from '~/components/react/ScrollCue.tsx';
+---
+
+<section
+  id="gioi-thieu"
+  aria-labelledby="gieo-hero-heading"
+  class="relative flex min-h-[100svh] flex-col overflow-hidden bg-gradient-to-b from-sprout-100 via-sprout-50 to-sprout-50"
+>
+  {/* Decorative plants. Pinned to the viewport edges and kept clear of the
+      centred text column at every width, so they can never overlap the
+      headline (FR-026, FR-027). Hidden below 640px where there is no room. */}
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
+    <LeafPair
+      size={104}
+      class="anim-drift absolute -left-6 top-24 hidden text-sprout-300 opacity-70 sm:block lg:left-10"
+    />
+    <Sprout
+      size={76}
+      class="anim-sway anim-delay-1 absolute right-4 top-32 hidden text-sprout-400 opacity-60 sm:block lg:right-20"
+    />
+    <GrassTuft
+      size={180}
+      class="anim-sway anim-delay-2 absolute -left-4 bottom-0 text-sprout-300 opacity-50 sm:left-4"
+    />
+    <GrassTuft
+      size={220}
+      class="anim-sway anim-delay-3 absolute -right-6 bottom-0 text-sprout-200 opacity-60"
+    />
+  </div>
+
+  <div
+    class="section-shell relative z-10 flex flex-1 flex-col items-center justify-center py-20 text-center"
+  >
+    {/* Mark is decorative: the brand name is visible text beside it, so
+        announcing both would duplicate the name (FR-027, FR-031). */}
+    <div class="mb-6 flex items-center gap-3">
+      <GieoLogo size={44} decorative class="text-sprout-600" />
+      <span class="font-display text-2xl font-semibold tracking-wide text-sprout-800">
+        {site.brand.name}
+      </span>
+    </div>
+
+    <HeroHeadline />
+
+    <div class="mt-12">
+      <ScrollCue client:visible label={site.hero.scrollCueLabel} href="#noi-dung" />
+    </div>
+  </div>
+</section>

@@ -1,0 +1,106 @@
+---
+/**
+ * Document shell for the Gieo landing site.
+ *
+ * Also the single future home for SEO and social-preview metadata, which the
+ * spec places out of scope for this release.
+ */
+// Fontsource ships one @font-face per subset with the correct unicode-range,
+// so the browser downloads the Vietnamese subset only when the page actually
+// contains those codepoints — which this page does throughout. Verified these
+// files carry a real `vietnamese` subset (U+1EA0-1EF9 etc.), not just latin-ext.
+import '@fontsource-variable/lora/wght.css';
+import '@fontsource/be-vietnam-pro/400.css';
+import '@fontsource/be-vietnam-pro/600.css';
+import '~/styles/global.css';
+import '~/styles/motion.css';
+import { site } from '~/content/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = `${site.brand.name} — ${site.brand.tagline}`, description = site.hero.headline } =
+  Astro.props;
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <script is:inline>
+      // Motion gate (FR-029, FR-030). Deliberately BLOCKING and in <head>:
+      // it must run before first paint, or content would flash visible and
+      // then hide itself.
+      //
+      // Everything that animates is styled visible by default and only gets a
+      // hidden starting state under `.js-motion`. So no JavaScript, or reduced
+      // motion, means the content was simply never hidden — the animation can
+      // only hide what it is also guaranteed to reveal.
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('js-motion');
+      }
+    </script>
+  </head>
+  <body class="min-h-screen antialiased">
+    {/* Keyboard users can skip the decorative hero straight to content (FR-031) */}
+    <a
+      href="#noi-dung"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sprout-800 focus:shadow-lg"
+    >
+      Bỏ qua tới nội dung chính
+    </a>
+    <main>
+      <slot />
+    </main>
+
+    <script is:inline>
+      // Scroll reveal observer. The `js-motion` gate was already decided in
+      // <head>; this only drives the reveal itself.
+      (function () {
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (reduced.matches) return;
+
+        var items = document.querySelectorAll('.reveal');
+
+        // Without IntersectionObserver, drop the hidden state entirely rather
+        // than leaving content stranded behind a reveal that can never fire.
+        if (!items.length || !('IntersectionObserver' in window)) {
+          document.documentElement.classList.remove('js-motion');
+          return;
+        }
+
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('is-visible');
+              // Reveal once. A reveal that reverses on scroll-up would move
+              // content while it is being read, which FR-029 prohibits.
+              observer.unobserve(entry.target);
+            });
+          },
+          { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+        );
+
+        items.forEach(function (item) {
+          observer.observe(item);
+        });
+
+        // If the visitor turns reduced motion on mid-session, drop every
+        // pending hidden state immediately rather than stranding content.
+        reduced.addEventListener('change', function (event) {
+          if (!event.matches) return;
+          document.documentElement.classList.remove('js-motion');
+          observer.disconnect();
+        });
+      })();
+    </script>
+  </body>
+</html>

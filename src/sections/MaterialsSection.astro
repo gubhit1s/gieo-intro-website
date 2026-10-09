@@ -1,0 +1,49 @@
+---
+/**
+ * Free materials — User Story 4 (FR-013 … FR-016).
+ *
+ * Entry copy is placeholder in this release. Every card shares one layout so
+ * the section reads as a deliberate preview rather than an unfinished area.
+ */
+import { site } from '~/content/site';
+import MaterialCard from '~/components/astro/MaterialCard.astro';
+import ScrollReveal from '~/components/astro/ScrollReveal.astro';
+import GrassTuft from '~/assets/svg/plants/GrassTuft.astro';
+---
+
+<section
+  id="tai-lieu"
+  aria-labelledby="gieo-materials-heading"
+  class="relative overflow-hidden bg-sprout-100 py-20 sm:py-28"
+>
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
+    <GrassTuft
+      size={200}
+      class="anim-sway anim-delay-2 absolute -left-8 bottom-0 text-sprout-200 opacity-60"
+    />
+  </div>
+
+  <div class="section-shell relative z-10">
+    <div class="text-center">
+      <h2
+        id="gieo-materials-heading"
+        class="font-display text-3xl font-semibold text-sprout-900 sm:text-4xl"
+      >
+        {site.materials.heading}
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-base text-ink-muted">
+        {site.materials.subtitle}
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        site.materials.entries.map((entry, index) => (
+          <ScrollReveal delay={index * 0.1} class="h-full">
+            <MaterialCard entry={entry} />
+          </ScrollReveal>
+        ))
+      }
+    </div>
+  </div>
+</section>

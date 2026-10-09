@@ -1,0 +1,30 @@
+---
+/**
+ * Scroll-reveal wrapper (FR-029, FR-030).
+ *
+ * Deliberately NOT a React island. The revealed content is static HTML, so
+ * making it an island would ship JavaScript for every card on the page and put
+ * the text behind hydration — exactly what the "scripting unavailable" edge
+ * case forbids.
+ *
+ * Instead: this renders a plain wrapper that is VISIBLE by default. The inline
+ * script in BaseLayout adds `js-motion` to <html> only when JS runs and the
+ * visitor has not asked for reduced motion; the hidden-then-revealed styles in
+ * global.css are scoped under that class. No JS, or reduced motion, means the
+ * content was simply always visible.
+ */
+interface Props {
+  /** Stagger delay in seconds, for revealing siblings in sequence. */
+  delay?: number;
+  class?: string;
+}
+
+const { delay = 0, class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={['reveal', className]}
+  style={delay ? `--reveal-delay: ${delay}s` : undefined}
+>
+  <slot />
+</div>

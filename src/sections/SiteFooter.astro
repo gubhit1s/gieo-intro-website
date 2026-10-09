@@ -1,0 +1,43 @@
+---
+/** Footer — User Story 5 (FR-020 … FR-023). */
+import { site } from '~/content/site';
+import GieoLogo from '~/assets/svg/GieoLogo.astro';
+import SocialLink from '~/components/astro/SocialLink.astro';
+import GrassTuft from '~/assets/svg/plants/GrassTuft.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer
+  aria-labelledby="gieo-footer-heading"
+  class="relative overflow-hidden border-t border-sprout-200 bg-sprout-100 py-14"
+>
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
+    <GrassTuft
+      size={160}
+      class="anim-sway anim-delay-1 absolute -right-4 bottom-0 text-sprout-200 opacity-70"
+    />
+  </div>
+
+  <div class="section-shell relative z-10 flex flex-col items-center gap-8 text-center">
+    <div class="flex flex-col items-center gap-3">
+      <GieoLogo size={40} decorative class="text-sprout-600" />
+      <h2 id="gieo-footer-heading" class="font-display text-xl font-semibold text-sprout-800">
+        {site.brand.name}
+      </h2>
+      <p class="text-sm text-ink-muted">{site.brand.tagline}</p>
+    </div>
+
+    <ul class="flex items-center gap-4">
+      {
+        site.social.map((link) => (
+          <li>
+            <SocialLink link={link} />
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="text-xs text-ink-muted">© {year} {site.brand.name}</p>
+  </div>
+</footer>

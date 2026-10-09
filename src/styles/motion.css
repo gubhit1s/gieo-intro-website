@@ -1,0 +1,82 @@
+/**
+ * Ambient decorative motion (research.md R-002).
+ *
+ * Every rule here is wrapped in `prefers-reduced-motion: no-preference`, so
+ * reduced motion suppresses all of it with no JavaScript involved (FR-030).
+ *
+ * These animate transform/opacity only, so they run off the main thread and
+ * cost nothing on the critical path. They are slow, low-amplitude, and never
+ * sit under text — FR-029 forbids content that moves while being read.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes gieo-drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    50% {
+      transform: translate3d(0, -8px, 0) rotate(1.5deg);
+    }
+  }
+
+  @keyframes gieo-sway {
+    0%,
+    100% {
+      transform: rotate(-2deg);
+    }
+    50% {
+      transform: rotate(2deg);
+    }
+  }
+
+  @keyframes gieo-fall {
+    0% {
+      transform: translate3d(0, -10%, 0) rotate(0deg);
+      opacity: 0.85;
+    }
+    100% {
+      transform: translate3d(6px, 110%, 0) rotate(40deg);
+      opacity: 0.85;
+    }
+  }
+
+  @keyframes gieo-cue {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(0, 6px, 0);
+    }
+  }
+
+  .anim-drift {
+    animation: gieo-drift 9s ease-in-out infinite;
+  }
+
+  .anim-sway {
+    /* transform-origin at the base so the stem sways like a plant, not a sign. */
+    transform-origin: bottom center;
+    animation: gieo-sway 7s ease-in-out infinite;
+  }
+
+  .anim-fall {
+    animation: gieo-fall 14s linear infinite;
+  }
+
+  .anim-cue {
+    animation: gieo-cue 2.2s ease-in-out infinite;
+  }
+
+  /* Stagger so the decorations never pulse in unison, which reads as a glitch. */
+  .anim-delay-1 {
+    animation-delay: 1.3s;
+  }
+  .anim-delay-2 {
+    animation-delay: 2.9s;
+  }
+  .anim-delay-3 {
+    animation-delay: 4.1s;
+  }
+}

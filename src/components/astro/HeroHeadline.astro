@@ -1,0 +1,43 @@
+---
+/**
+ * The page's single <h1> with its word-by-word entrance (FR-005, FR-006).
+ *
+ * Deliberately NOT a React island. A Motion island server-renders its `initial`
+ * state into the HTML as `style="opacity:0"`, which means the headline — the
+ * single most important string on the page — would be invisible to anyone
+ * whose JavaScript fails or is still loading. That is precisely the failure the
+ * spec's "scripting unavailable" edge case forbids.
+ *
+ * So the words are plain markup, visible by default, and the stagger is CSS
+ * under `.js-motion`. The gate class is set by a blocking <head> script, so the
+ * hidden state applies before first paint and there is no flash.
+ */
+import { site } from '~/content/site';
+
+const words = site.hero.headline.split(' ');
+
+// Cap the stagger so a longer headline still completes inside FR-006's 1000ms
+// budget: last word starts at most 540ms in, plus a 380ms animation.
+const perWordDelay = Math.min(0.06, 0.54 / Math.max(words.length, 1));
+---
+
+<h1
+  id="gieo-hero-heading"
+  class="text-balance text-3xl font-semibold leading-tight text-sprout-900 sm:text-4xl md:text-5xl lg:text-6xl"
+>
+  {
+    words.map((word, index) => (
+      <span class="hero-word inline-block" style={`--word-delay: ${(index * perWordDelay).toFixed(3)}s`}>
+        {word}{index < words.length - 1 ? '\u00A0' : ''}
+      </span>
+    ))
+  }
+</h1>
+
+{
+  site.hero.subheadline && (
+    <p class="hero-sub mt-5 max-w-2xl text-base text-ink-muted sm:text-lg">
+      {site.hero.subheadline}
+    </p>
+  )
+}

@@ -1,0 +1,31 @@
+---
+/** Decorative leaf pair. Ornamental only — aria-hidden, non-interactive (FR-027). */
+interface Props {
+  size?: number;
+  class?: string;
+}
+const { size = 40, class: className = '' } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 32 32"
+  width={size}
+  height={size}
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  class={className}
+>
+  <path
+    d="M15 16C11.5 9.5 14 4 20.5 2c2.5 6.2.3 11.9-5.5 14z"
+    fill="currentColor"
+    opacity="0.75"
+  />
+  <path
+    d="M14 18C8.4 16.6 4.8 19.6 4 25.5c6 1.4 10.7-1.2 12-7.5z"
+    fill="currentColor"
+    opacity="0.45"
+  />
+  <path d="M14 30c0-7 1-11 6-16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+</svg>

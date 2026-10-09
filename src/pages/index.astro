@@ -1,0 +1,24 @@
+---
+/**
+ * The single route.
+ *
+ * Section order is fixed by FR-001: hero → team → materials → course → footer.
+ * Note that this is NOT the user-story priority order (course is P3, materials
+ * is P4), so the materials section sits above the course section even though it
+ * was built after it.
+ */
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import HeroSection from '~/sections/HeroSection.astro';
+import TeamSection from '~/sections/TeamSection.astro';
+import MaterialsSection from '~/sections/MaterialsSection.astro';
+import CourseSection from '~/sections/CourseSection.astro';
+import SiteFooter from '~/sections/SiteFooter.astro';
+---
+
+<BaseLayout>
+  <HeroSection />
+  <TeamSection />
+  <MaterialsSection />
+  <CourseSection />
+  <SiteFooter />
+</BaseLayout>

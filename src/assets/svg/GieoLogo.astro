@@ -1,0 +1,67 @@
+---
+/**
+ * The Gieo brand mark (FR-025).
+ *
+ * Concept: a seed opening into a two-leaf sprout, with the letter G formed by
+ * the seed's negative space — the mark literally depicts "gieo" (to sow) while
+ * staying a monogram. The G ring is heavy enough to hold at 24px, where the
+ * leaf veins drop out but the silhouette still reads.
+ *
+ * All fills use currentColor so the mark inherits text colour and needs no
+ * per-context variant.
+ */
+interface Props {
+  /** Size in px. Works from 24 (footer) to hero scale. */
+  size?: number;
+  /**
+   * When the brand name is already visible beside the mark, pass decorative so
+   * the logo is skipped by assistive tech — otherwise the name is announced
+   * twice (FR-027, FR-031).
+   */
+  decorative?: boolean;
+  class?: string;
+}
+
+const { size = 40, decorative = false, class: className = '' } = Astro.props;
+
+const a11y = decorative
+  ? { 'aria-hidden': 'true' as const, focusable: 'false' as const }
+  : { role: 'img' as const, 'aria-label': 'Gieo' };
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 48 48"
+  width={size}
+  height={size}
+  fill="none"
+  class={className}
+  {...a11y}
+>
+  <!-- Sprout stem -->
+  <path
+    d="M24 34V20"
+    stroke="currentColor"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+  <!-- Left leaf -->
+  <path
+    d="M24 24c-1.6-5.4-6-8.2-11.2-8 0 5.4 3.4 9.6 8.6 10.4 1 .2 1.9-.2 2.6-.9z"
+    fill="currentColor"
+    opacity="0.55"
+  />
+  <!-- Right leaf -->
+  <path
+    d="M24 21c1.8-6 6.6-9 12.4-8.8 0 6-3.8 10.6-9.6 11.5-1.1.2-2.1-.3-2.8-1.1z"
+    fill="currentColor"
+  />
+  <!-- Seed husk: the open ring reads as G (negative space) -->
+  <path
+    d="M31 38.2a9.5 9.5 0 1 1 2.4-6.3h-7.9"
+    stroke="currentColor"
+    stroke-width="3.4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

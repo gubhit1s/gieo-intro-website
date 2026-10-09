@@ -1,0 +1,64 @@
+---
+/**
+ * One founder's card (FR-009, FR-012).
+ *
+ * Hard rule: achievements render in FULL. No line-clamp, no ellipsis, no
+ * expand/collapse at any width — FR-012 forbids truncating or hiding a
+ * credential behind an interaction. The card is also non-interactive: it is not
+ * a link and takes no focus stop.
+ */
+import type { TeamMember } from '~/content/types';
+import Sprout from '~/assets/svg/plants/Sprout.astro';
+
+interface Props {
+  member: TeamMember;
+}
+
+const { member } = Astro.props;
+
+// Portraits are not available yet; cards show an initial-based placeholder
+// sized so a real photograph drops in later without layout change.
+const initial = member.name.trim().split(/\s+/).at(-1)?.charAt(0) ?? 'G';
+---
+
+<article
+  class="flex h-full flex-col rounded-2xl border border-sprout-200 bg-white p-6 shadow-sm sm:p-8"
+>
+  <div class="flex items-center gap-4">
+    {
+      member.portrait ? (
+        <img
+          src={member.portrait.src}
+          alt={member.portrait.alt}
+          width="64"
+          height="64"
+          class="h-16 w-16 rounded-full object-cover"
+        />
+      ) : (
+        <div
+          aria-hidden="true"
+          class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-sprout-100 font-display text-2xl font-semibold text-sprout-700"
+        >
+          {initial}
+        </div>
+      )
+    }
+    <div class="min-w-0">
+      <h3 class="font-display text-xl font-semibold text-sprout-900 sm:text-2xl">
+        {member.name}
+      </h3>
+      {member.role && <p class="mt-0.5 text-sm text-ink-muted">{member.role}</p>}
+    </div>
+  </div>
+
+  <ul class="mt-6 flex flex-col gap-3">
+    {
+      member.achievements.map((achievement) => (
+        <li class="flex gap-3 text-sm leading-relaxed text-ink sm:text-base">
+          <Sprout size={18} class="mt-1 shrink-0 text-sprout-500" />
+          <span>{achievement.text}</span>
+        </li>
+      ))
+    }
+  </ul>
+</article>
