@@ -11,23 +11,38 @@ import CallToActionButton from '~/components/react/CallToActionButton.tsx';
 import ScrollReveal from '~/components/astro/ScrollReveal.astro';
 import Sprout from '~/assets/svg/plants/Sprout.astro';
 import FallingSeed from '~/assets/svg/plants/FallingSeed.astro';
+import WildFlower from '~/assets/svg/plants/WildFlower.astro';
+import Blossom from '~/assets/svg/plants/Blossom.astro';
 ---
 
+{/* Background: see SECTION BACKGROUNDS in global.css. */}
 <section
   id="khoa-hoc"
   aria-labelledby="gieo-course-heading"
-  class="relative overflow-hidden py-20 sm:py-28"
+  class="relative overflow-hidden bg-gradient-to-b from-sprout-100 to-sprout-50 py-20 sm:py-28"
 >
+  {/* The outcome list is narrower than the page, so the side gutters have
+      room for flowers from 1024px. */}
   <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
     <Sprout
       size={90}
       class="anim-sway absolute -right-2 top-16 hidden text-sprout-300 opacity-60 lg:block"
     />
-    <FallingSeed size={18} class="anim-fall absolute left-[12%] top-0 text-sprout-400 opacity-50" />
+    <FallingSeed size={18} class="anim-fall absolute left-[12%] top-0 text-sun-400 opacity-50" />
     <FallingSeed
       size={14}
       class="anim-fall anim-delay-2 absolute right-[18%] top-0 text-sprout-300 opacity-50"
     />
+    <WildFlower
+      size={26}
+      class="anim-sway anim-delay-2 absolute left-5 top-[50%] hidden text-sprout-400 lg:block"
+    />
+    <WildFlower
+      size={18}
+      class="anim-sway absolute left-12 top-[56%] hidden text-sprout-300 lg:block"
+      petalClass="text-sun-200"
+    />
+    <Blossom size={14} class="absolute right-8 top-[62%] hidden text-sun-300 lg:block" />
   </div>
 
   <div class="section-shell relative z-10">

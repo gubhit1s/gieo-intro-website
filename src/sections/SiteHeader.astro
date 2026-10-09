@@ -1,0 +1,71 @@
+---
+/**
+ * Sticky top bar: the Gieo mark (back to top), in-page section links, and a
+ * contact button that jumps to the footer.
+ *
+ * Links are plain anchors, so the jump works with no JavaScript; the smooth
+ * scroll and the offset below the bar both come from global.css
+ * (`scroll-behavior`, `scroll-padding-top: var(--header-h)`).
+ *
+ * Layout: phones get two rows — mark + contact, then the section links —
+ * and from 640px everything sits on one row. The row heights define
+ * --header-h (h-14 + h-11 = 6.25rem, then h-16 = 4rem). Change both together.
+ */
+import { site } from '~/content/site';
+import GieoLogo from '~/assets/svg/GieoLogo.astro';
+---
+
+<header class="sticky top-0 z-40 border-b border-sprout-200/70 bg-sprout-50/90 backdrop-blur">
+  <div
+    class="section-shell grid grid-cols-[1fr_auto] sm:flex sm:h-16 sm:items-center sm:gap-2"
+  >
+    <div class="flex h-14 items-center sm:mr-auto sm:h-auto">
+      {/* Mark + wordmark lockup. The mark is decorative; the link's
+          aria-label starts with the visible name, so speech users can say
+          "Gieo" to activate it. */}
+      <a
+        href="#gioi-thieu"
+        aria-label={site.nav.homeLabel}
+        class="group -ml-1 flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3"
+      >
+        <GieoLogo
+          size={44}
+          decorative
+          class="text-sprout-600 transition-transform group-hover:-translate-y-0.5"
+        />
+        <span class="font-brand text-[1.75rem] leading-none text-sprout-800">
+          {site.brand.name}
+        </span>
+      </a>
+    </div>
+
+    {/* On phones the links take the second row and scroll sideways if they
+        still don't fit, so the bar never wraps (FR-003). */}
+    <nav
+      aria-label={site.nav.label}
+      class="col-span-2 row-start-2 -mx-4 h-11 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:h-auto sm:overflow-visible sm:px-0"
+    >
+      <ul class="flex h-full items-center whitespace-nowrap sm:gap-1">
+        {
+          site.nav.links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="block rounded-full px-2 py-1.5 text-sm font-semibold text-sprout-800 transition-colors hover:bg-sprout-100 hover:text-sprout-900 sm:px-3"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a
+      href={site.nav.contact.href}
+      class="self-center whitespace-nowrap rounded-full bg-sprout-700 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-sprout-800"
+    >
+      {site.nav.contact.label}
+    </a>
+  </div>
+</header>

@@ -28,8 +28,17 @@ export interface Hero {
   /** One sentence, Vietnamese, no line breaks — wrapping is the layout's job (FR-005). */
   readonly headline: string;
   readonly subheadline: string | null;
-  /** Accessible label for the scroll cue (FR-007, FR-031). */
-  readonly scrollCueLabel: string;
+  /** Two buttons under the headline: the primary path, then a secondary one. */
+  readonly actions: readonly [HeroAction, HeroAction];
+}
+
+export type HeroActionIcon = 'compass' | 'workshop';
+
+export interface HeroAction {
+  readonly label: string;
+  /** In-page anchor; must match a section id in src/sections. */
+  readonly href: `#${string}`;
+  readonly icon: HeroActionIcon;
 }
 
 /** The competition level a credential was won at, for optional grouping. */
@@ -127,8 +136,26 @@ export interface SocialLink {
   readonly label: string;
 }
 
+export interface NavLink {
+  readonly label: string;
+  /** In-page anchor; must match a section id in src/sections. */
+  readonly href: `#${string}`;
+}
+
+export interface Navigation {
+  /** Accessible name for the <nav> landmark. */
+  readonly label: string;
+  /** Accessible name for the logo link, which returns to the top. */
+  readonly homeLabel: string;
+  /** Section links, in page order. */
+  readonly links: readonly NavLink[];
+  /** Shown apart from `links` as the header's one filled button. */
+  readonly contact: NavLink;
+}
+
 export interface SiteContent {
   readonly brand: Brand;
+  readonly nav: Navigation;
   readonly hero: Hero;
   readonly team: TeamSectionContent;
   readonly materials: MaterialsSectionContent;

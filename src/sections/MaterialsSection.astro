@@ -8,18 +8,30 @@
 import { site } from '~/content/site';
 import MaterialCard from '~/components/astro/MaterialCard.astro';
 import ScrollReveal from '~/components/astro/ScrollReveal.astro';
-import GrassTuft from '~/assets/svg/plants/GrassTuft.astro';
+import WildFlower from '~/assets/svg/plants/WildFlower.astro';
+import Sprout from '~/assets/svg/plants/Sprout.astro';
 ---
 
+{/* Background: see SECTION BACKGROUNDS in global.css. */}
 <section
   id="tai-lieu"
   aria-labelledby="gieo-materials-heading"
-  class="relative overflow-hidden bg-sprout-100 py-20 sm:py-28"
+  class="relative overflow-hidden bg-gradient-to-b from-sun-50 to-sprout-100 py-20 sm:py-28"
 >
+  {/* Plants sit in the side gutters, which are only wide enough from 1280px. */}
   <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
-    <GrassTuft
-      size={200}
-      class="anim-sway anim-delay-2 absolute -left-8 bottom-0 text-sprout-200 opacity-60"
+    <Sprout
+      size={56}
+      class="anim-sway anim-delay-3 absolute right-6 top-10 hidden text-sprout-300 opacity-70 lg:block"
+    />
+    <WildFlower
+      size={26}
+      class="anim-sway anim-delay-1 absolute right-6 top-[52%] hidden text-sprout-400 xl:block"
+    />
+    <WildFlower
+      size={18}
+      class="anim-sway absolute right-14 top-[58%] hidden text-sprout-300 xl:block"
+      petalClass="text-sun-200"
     />
   </div>
 

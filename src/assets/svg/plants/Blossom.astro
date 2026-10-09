@@ -1,0 +1,35 @@
+---
+/**
+ * Decorative five-petal blossom, used small and scattered. Ornamental only —
+ * aria-hidden, non-interactive (FR-027).
+ *
+ * `class` colours the petals; `centreClass` colours the middle.
+ */
+interface Props {
+  size?: number;
+  class?: string;
+  centreClass?: string;
+}
+const { size = 20, class: className = '', centreClass = 'text-bark-400' } = Astro.props;
+
+const petals = Array.from({ length: 5 }, (_, i) => {
+  const angle = ((i * 72 - 90) * Math.PI) / 180;
+  return { cx: 12 + 5 * Math.cos(angle), cy: 12 + 5 * Math.sin(angle) };
+});
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  width={size}
+  height={size}
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  class={className}
+>
+  <g fill="currentColor">
+    {petals.map((p) => <circle cx={p.cx.toFixed(2)} cy={p.cy.toFixed(2)} r="4.2" />)}
+  </g>
+  <circle cx="12" cy="12" r="2.6" class={centreClass} fill="currentColor" />
+</svg>

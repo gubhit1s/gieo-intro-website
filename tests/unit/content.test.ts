@@ -30,8 +30,12 @@ describe('brand and hero', () => {
     expect(site.hero.headline).toBe('Chinh phục học sinh giỏi không khó như bạn nghĩ');
   });
 
-  it('has a non-empty scroll cue label (FR-007)', () => {
-    expect(site.hero.scrollCueLabel.length).toBeGreaterThan(0);
+  it('has two labelled hero actions that point at in-page anchors', () => {
+    expect(site.hero.actions).toHaveLength(2);
+    for (const action of site.hero.actions) {
+      expect(action.label.length).toBeGreaterThan(0);
+      expect(action.href).toMatch(/^#[a-z-]+$/);
+    }
   });
 });
 

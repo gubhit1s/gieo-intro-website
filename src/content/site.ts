@@ -22,10 +22,25 @@ export const site = {
     tagline: 'Gieo chữ, ươm mầm văn chương',
   },
 
+  nav: {
+    label: 'Điều hướng chính',
+    homeLabel: 'Gieo — về đầu trang',
+    links: [
+      { label: 'Về chúng mình', href: '#noi-dung' },
+      { label: 'Kho tài liệu', href: '#tai-lieu' },
+      { label: 'Khóa học', href: '#khoa-hoc' },
+    ],
+    contact: { label: 'Liên hệ', href: '#lien-he' },
+  },
+
   hero: {
     headline: 'Chinh phục học sinh giỏi không khó như bạn nghĩ',
     subheadline: 'Cùng Gieo gieo những hạt mầm đầu tiên trên hành trình văn chương của bạn.',
-    scrollCueLabel: 'Cuộn xuống để tìm hiểu thêm',
+    actions: [
+      { label: 'Khám phá lộ trình HSG Văn', href: '#khoa-hoc', icon: 'compass' },
+      // No workshop section exists yet; contact is the closest real target.
+      { label: 'Tìm hiểu về workshop', href: '#lien-he', icon: 'workshop' },
+    ],
   },
 
   team: {

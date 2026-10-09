@@ -3,26 +3,34 @@
 import { site } from '~/content/site';
 import GieoLogo from '~/assets/svg/GieoLogo.astro';
 import SocialLink from '~/components/astro/SocialLink.astro';
-import GrassTuft from '~/assets/svg/plants/GrassTuft.astro';
+import WildFlower from '~/assets/svg/plants/WildFlower.astro';
 
 const year = new Date().getFullYear();
 ---
 
+{/* Background: see SECTION BACKGROUNDS in global.css. No top border — the
+    gradient carries on from the course section without a seam. */}
 <footer
+  id="lien-he"
   aria-labelledby="gieo-footer-heading"
-  class="relative overflow-hidden border-t border-sprout-200 bg-sprout-100 py-14"
+  class="relative overflow-hidden bg-gradient-to-b from-sprout-50 to-sprout-100 py-14"
 >
   <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
-    <GrassTuft
-      size={160}
-      class="anim-sway anim-delay-1 absolute -right-4 bottom-0 text-sprout-200 opacity-70"
+    <WildFlower
+      size={24}
+      class="anim-sway anim-delay-1 absolute left-[10%] top-1/3 hidden text-sprout-400 md:block"
+    />
+    <WildFlower
+      size={22}
+      class="anim-sway anim-delay-3 absolute right-[10%] top-1/3 hidden text-sprout-300 md:block"
+      petalClass="text-sun-200"
     />
   </div>
 
   <div class="section-shell relative z-10 flex flex-col items-center gap-8 text-center">
     <div class="flex flex-col items-center gap-3">
       <GieoLogo size={40} decorative class="text-sprout-600" />
-      <h2 id="gieo-footer-heading" class="font-display text-xl font-semibold text-sprout-800">
+      <h2 id="gieo-footer-heading" class="font-brand text-4xl text-sprout-800">
         {site.brand.name}
       </h2>
       <p class="text-sm text-ink-muted">{site.brand.tagline}</p>

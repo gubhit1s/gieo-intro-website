@@ -1,0 +1,45 @@
+---
+/**
+ * Decorative wildflower: green stem and leaf, sun-coloured petals. Ornamental
+ * only — aria-hidden, non-interactive (FR-027).
+ *
+ * `class` colours the stem and leaf; `petalClass` and `centreClass` colour the
+ * flower head. Height is twice `size`.
+ */
+interface Props {
+  size?: number;
+  class?: string;
+  petalClass?: string;
+  centreClass?: string;
+}
+const {
+  size = 24,
+  class: className = '',
+  petalClass = 'text-sun-300',
+  centreClass = 'text-bark-400',
+} = Astro.props;
+
+// Five petals evenly around the centre (12, 12), starting straight up.
+const petals = Array.from({ length: 5 }, (_, i) => {
+  const angle = ((i * 72 - 90) * Math.PI) / 180;
+  return { cx: 12 + 3.6 * Math.cos(angle), cy: 12 + 3.6 * Math.sin(angle) };
+});
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 48"
+  width={size}
+  height={size * 2}
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  class={className}
+>
+  <path d="M12 47c0-11-1-19 0-31" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+  <path d="M11.8 34C7 32.6 4.2 28.6 4 24c4.4.8 7.4 4 7.8 10z" fill="currentColor" opacity="0.7" />
+  <g class={petalClass} fill="currentColor">
+    {petals.map((p) => <circle cx={p.cx.toFixed(2)} cy={p.cy.toFixed(2)} r="3.2" />)}
+  </g>
+  <circle cx="12" cy="12" r="2.2" class={centreClass} fill="currentColor" />
+</svg>

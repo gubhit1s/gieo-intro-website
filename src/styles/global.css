@@ -7,6 +7,21 @@
  *   sprout-50 … sprout-400 and --color-seed are SURFACES AND DECORATION ONLY.
  *   They must never carry text on a light background.
  *   sprout-600 … sprout-900, --color-ink and --color-ink-muted carry all text.
+ *   The same split applies to the two supporting hues below: sun/bark 50 … 400
+ *   are surfaces and decoration, sun-700+ and bark-600+ may carry text.
+ *
+ * HUE ROLES — green stays dominant (FR-024); the others are accents:
+ *   sprout  growth, structure, primary actions, all headings.
+ *   sun     sunlight and ripe grain: flowers, seeds, icon badges, the
+ *           secondary hero button. Use sparingly, as highlights.
+ *   bark    earth: the logo's soil mound, flower centres and small labels.
+ *           Never a section background.
+ *
+ * SECTION BACKGROUNDS — each section is one top-to-bottom gradient whose top
+ * colour equals the previous section's bottom colour, so there are no seams:
+ *   hero sprout-100→sprout-50 · team sprout-50→sun-50 · materials
+ *   sun-50→sprout-100 · course sprout-100→sprout-50 · footer sprout-50→sprout-100
+ * No radial glows or other patches of colour inside a section.
  *
  * FR-028 sets contrast floors of 4.5:1 for body text and 3:1 for large text,
  * which genuinely conflicts with "light green dominant" (FR-024) — light greens
@@ -26,17 +41,55 @@
   --color-sprout-800: #2f4d1b;
   --color-sprout-900: #1f3313;
 
+  --color-sun-50: #fffaeb;
+  --color-sun-100: #fdf0cc;
+  --color-sun-200: #fae09c;
+  --color-sun-300: #f5cb6b;
+  --color-sun-400: #e8b04b;
+  --color-sun-500: #d0922c;
+  --color-sun-600: #a9711b;
+  --color-sun-700: #835412;
+  --color-sun-800: #613e0f;
+
+  --color-bark-50: #f9f4ee;
+  --color-bark-100: #f0e5d8;
+  --color-bark-200: #dfc9b0;
+  --color-bark-300: #c6a582;
+  --color-bark-400: #a8805c;
+  --color-bark-500: #8a6342;
+  --color-bark-600: #6e4c32;
+  --color-bark-700: #563b27;
+  --color-bark-800: #3e2b1d;
+
   --color-ink: #26301f;
   --color-ink-muted: #4a553f;
   --color-seed: #e8b04b;
 
-  --font-display: 'Lora Variable', Georgia, 'Times New Roman', serif;
+  --font-display: 'Playpen Sans Variable', 'Be Vietnam Pro', system-ui, sans-serif;
   --font-body: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+  /* The "Gieo" wordmark only. Courgette ships no Vietnamese glyphs and a
+     script face gets hard to read past one word, so never use font-brand for
+     headings or Vietnamese copy. */
+  --font-brand: 'Courgette', 'Segoe Script', cursive;
 }
 
 @layer base {
+  /* Height of the sticky SiteHeader: two rows (logo, then nav) on phones, one
+     row from 640px. Keep in sync with the row heights in SiteHeader.astro. */
+  :root {
+    --header-h: 6.25rem;
+  }
+
+  @media (min-width: 640px) {
+    :root {
+      --header-h: 4rem;
+    }
+  }
+
   html {
     scroll-behavior: smooth;
+    /* Nav jumps must land below the sticky header, not underneath it. */
+    scroll-padding-top: var(--header-h);
   }
 
   /* Honour FR-030 even for the browser's own scrolling. */

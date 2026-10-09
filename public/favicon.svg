@@ -1,9 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Hard-coded copy of src/assets/svg/GieoLogo.astro — update both. -->
   <rect width="48" height="48" rx="10" fill="#f4faf0" />
-  <g fill="none" stroke="#4e7f2d" color="#4e7f2d">
-    <path d="M24 34V20" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
-    <path d="M24 24c-1.6-5.4-6-8.2-11.2-8 0 5.4 3.4 9.6 8.6 10.4 1 .2 1.9-.2 2.6-.9z" fill="currentColor" stroke="none" opacity="0.55" />
-    <path d="M24 21c1.8-6 6.6-9 12.4-8.8 0 6-3.8 10.6-9.6 11.5-1.1.2-2.1-.3-2.8-1.1z" fill="currentColor" stroke="none" />
-    <path d="M31 38.2a9.5 9.5 0 1 1 2.4-6.3h-7.9" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M7.5 42C9.4 36.4 15.6 33 24 33s14.6 3.4 16.5 9c.3.8-.3 1.5-1.1 1.5H8.6c-.8 0-1.4-.7-1.1-1.5z" fill="#a8805c" />
+  <g fill="#dfc9b0">
+    <ellipse cx="16" cy="40" rx="1.5" ry="1" />
+    <ellipse cx="30.5" cy="38.6" rx="1.2" ry="0.8" />
+    <ellipse cx="34.5" cy="41.2" rx="0.9" ry="0.6" />
   </g>
+  <path d="M24 34c0-5.4-.5-10.6.5-16.5" fill="none" stroke="#4e7f2d" stroke-width="2.8" stroke-linecap="round" />
+  <path d="M23.8 25.5c-1.9-5.8-6.7-9.1-13-8.6.4 6 4.7 10 10.7 10.3 1 0 1.8-.6 2.3-1.7z" fill="#4e7f2d" opacity="0.6" />
+  <path d="M24.5 19.5c1.6-7.5 7.4-11.9 15.4-11.6-.1 7.8-5.4 13.1-12.9 13.8-1 .1-2-.6-2.5-2.2z" fill="#4e7f2d" />
 </svg>

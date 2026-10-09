@@ -9,18 +9,27 @@ import { site } from '~/content/site';
 import TeamMemberCard from '~/components/astro/TeamMemberCard.astro';
 import ScrollReveal from '~/components/astro/ScrollReveal.astro';
 import LeafPair from '~/assets/svg/plants/LeafPair.astro';
+import WildFlower from '~/assets/svg/plants/WildFlower.astro';
+import Blossom from '~/assets/svg/plants/Blossom.astro';
 ---
 
+{/* Background: see SECTION BACKGROUNDS in global.css. */}
 <section
   id="noi-dung"
   aria-labelledby="gieo-team-heading"
-  class="relative scroll-mt-8 overflow-hidden py-20 sm:py-28"
+  class="relative overflow-hidden bg-gradient-to-b from-sprout-50 to-sun-50 py-20 sm:py-28"
 >
+  {/* Flowers sit in the side gutters, which are only wide enough from 1280px. */}
   <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
     <LeafPair
       size={88}
       class="anim-drift anim-delay-1 absolute -right-4 top-10 hidden text-sprout-200 opacity-70 md:block"
     />
+    <WildFlower
+      size={26}
+      class="anim-sway anim-delay-2 absolute left-6 top-[46%] hidden text-sprout-400 xl:block"
+    />
+    <Blossom size={14} class="absolute left-14 top-[42%] hidden text-sun-300 xl:block" />
   </div>
 
   <div class="section-shell relative z-10">

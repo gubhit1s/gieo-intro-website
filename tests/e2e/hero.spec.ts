@@ -17,8 +17,10 @@ test.describe('hero — first impression', () => {
     expect(box).not.toBeNull();
     expect(box!.y).toBeLessThan(800);
 
-    await expect(page.locator('#gioi-thieu').getByText(site.brand.name).first()).toBeVisible();
-    await expect(page.locator('#gioi-thieu svg').first()).toBeAttached();
+    // Brand name and mark live in the sticky header, above the hero.
+    const banner = page.getByRole('banner');
+    await expect(banner.getByText(site.brand.name, { exact: true })).toBeInViewport();
+    await expect(banner.locator('svg').first()).toBeInViewport();
   });
 
   test('the headline entrance settles within 1 second (FR-006)', async ({ page }) => {
@@ -60,20 +62,23 @@ test.describe('hero — first impression', () => {
     expect(topmostIsNotDecoration).toBe(true);
   });
 
-  test('shows a labelled scroll cue that reaches the next section (FR-007, US1 scenario 4)', async ({
-    page,
-  }) => {
+  test('both hero actions are visible and land on a real section', async ({ page }) => {
     await page.goto('/');
 
-    const cue = page.getByRole('link', { name: site.hero.scrollCueLabel });
-    await expect(cue).toBeVisible();
+    for (const action of site.hero.actions) {
+      await expect(page.locator(action.href)).toHaveCount(1);
+      await expect(
+        page.locator('#gioi-thieu').getByRole('link', { name: action.label })
+      ).toBeInViewport();
+    }
 
-    await cue.click();
+    const [roadmap] = site.hero.actions;
+    await page.locator('#gioi-thieu').getByRole('link', { name: roadmap.label }).click();
     await page.waitForTimeout(800);
 
     // Scrolling is not blocked or hijacked — we actually moved down the page.
     expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
-    await expect(page.getByText(site.team.heading)).toBeInViewport();
+    await expect(page.getByText(site.course.heading, { exact: true })).toBeInViewport();
   });
 
   test('scrolling from the hero is not intercepted (US1 scenario 4)', async ({ page }) => {
