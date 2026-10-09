@@ -12,7 +12,9 @@ import ScrollReveal from '~/components/astro/ScrollReveal.astro';
 import Sprout from '~/assets/svg/plants/Sprout.astro';
 import FallingSeed from '~/assets/svg/plants/FallingSeed.astro';
 import WildFlower from '~/assets/svg/plants/WildFlower.astro';
-import Blossom from '~/assets/svg/plants/Blossom.astro';
+import Tulip from '~/assets/svg/plants/Tulip.astro';
+import Daisy from '~/assets/svg/plants/Daisy.astro';
+import Lavender from '~/assets/svg/plants/Lavender.astro';
 ---
 
 {/* Background: see SECTION BACKGROUNDS in global.css. */}
@@ -34,15 +36,21 @@ import Blossom from '~/assets/svg/plants/Blossom.astro';
       class="anim-fall anim-delay-2 absolute right-[18%] top-0 text-sprout-300 opacity-50"
     />
     <WildFlower
-      size={26}
+      size={35}
       class="anim-sway anim-delay-2 absolute left-5 top-[50%] hidden text-sprout-400 lg:block"
     />
-    <WildFlower
-      size={18}
-      class="anim-sway absolute left-12 top-[56%] hidden text-sprout-300 lg:block"
-      petalClass="text-sun-200"
+    <Tulip
+      size={27}
+      class="anim-sway absolute left-14 top-[56%] hidden text-sprout-400 xl:block"
     />
-    <Blossom size={14} class="absolute right-8 top-[62%] hidden text-sun-300 lg:block" />
+    <Daisy
+      size={30}
+      class="anim-sway anim-delay-1 absolute right-5 top-[58%] hidden text-sprout-400 lg:block"
+    />
+    <Lavender
+      size={24}
+      class="anim-sway anim-delay-3 absolute right-14 top-[64%] hidden text-sprout-300 xl:block"
+    />
   </div>
 
   <div class="section-shell relative z-10">

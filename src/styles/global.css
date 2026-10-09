@@ -16,6 +16,10 @@
  *           secondary hero button. Use sparingly, as highlights.
  *   bark    earth: the logo's soil mound, flower centres and small labels.
  *           Never a section background.
+ *   blossom, lavender   petal colours for the decorative flowers, nothing else.
+ *
+ * Decorative flowers always have a stem (WildFlower, Tulip, Daisy, Lavender)
+ * and sit in the side gutters, never floating loose over content.
  *
  * SECTION BACKGROUNDS — each section is one top-to-bottom gradient whose top
  * colour equals the previous section's bottom colour, so there are no seams:
@@ -60,6 +64,14 @@
   --color-bark-600: #6e4c32;
   --color-bark-700: #563b27;
   --color-bark-800: #3e2b1d;
+
+  /* Flower petals only — decoration, never text or backgrounds. */
+  --color-blossom-200: #f9c5b9;
+  --color-blossom-300: #f3a291;
+  --color-blossom-400: #e98069;
+  --color-lavender-200: #d8cbf0;
+  --color-lavender-300: #bba7e2;
+  --color-lavender-400: #9d85d0;
 
   --color-ink: #26301f;
   --color-ink-muted: #4a553f;

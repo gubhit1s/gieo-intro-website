@@ -1,0 +1,50 @@
+---
+/**
+ * Decorative daisy: green stem and leaf, white petals, gold centre. Ornamental
+ * only — aria-hidden, non-interactive (FR-027).
+ *
+ * The petals carry a faint green outline so white still reads against the
+ * pale page background. Height is twice `size`.
+ */
+interface Props {
+  size?: number;
+  class?: string;
+}
+const { size = 24, class: className = '' } = Astro.props;
+
+// Ten slim petals evenly around the centre (12, 12).
+const petals = Array.from({ length: 10 }, (_, i) => {
+  const deg = i * 36;
+  const rad = ((deg - 90) * Math.PI) / 180;
+  return { cx: 12 + 5 * Math.cos(rad), cy: 12 + 5 * Math.sin(rad), deg };
+});
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 48"
+  width={size}
+  height={size * 2}
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  class={className}
+>
+  <path d="M12 47c.6-10 .4-19 0-29" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+  <path d="M12.2 36c4.6-1.2 7.4-4.8 7.8-9.4-4.4.6-7.4 3.8-7.8 9.4z" fill="currentColor" opacity="0.7" />
+  <g class="text-sprout-200" stroke="currentColor" stroke-width="0.6">
+    {
+      petals.map((p) => (
+        <ellipse
+          cx={p.cx.toFixed(2)}
+          cy={p.cy.toFixed(2)}
+          rx="1.7"
+          ry="3.6"
+          fill="#ffffff"
+          transform={`rotate(${p.deg} ${p.cx.toFixed(2)} ${p.cy.toFixed(2)})`}
+        />
+      ))
+    }
+  </g>
+  <circle cx="12" cy="12" r="2.8" class="text-sun-400" fill="currentColor" />
+</svg>

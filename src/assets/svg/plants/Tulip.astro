@@ -1,0 +1,33 @@
+---
+/**
+ * Decorative tulip: green stem and blade leaf, coral cup. Ornamental only —
+ * aria-hidden, non-interactive (FR-027).
+ *
+ * `class` colours the stem and leaf; `petalClass` colours the cup. Height is
+ * twice `size`.
+ */
+interface Props {
+  size?: number;
+  class?: string;
+  petalClass?: string;
+}
+const { size = 24, class: className = '', petalClass = 'text-blossom-300' } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 48"
+  width={size}
+  height={size * 2}
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  class={className}
+>
+  <path d="M12 47c0-9 0-17 0-26" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+  <path d="M11.8 45C6.4 39.6 4.8 31.6 6.6 24.5c3.4 5.6 5 12.4 5.2 20.5z" fill="currentColor" opacity="0.7" />
+  <g class={petalClass} fill="currentColor">
+    <path d="M5.5 9.5c0 7.4 2.6 12 6.5 12s6.5-4.6 6.5-12l-3.2 3.4L12 7.5l-3.3 5.4z" />
+    <path d="M9.4 12.4 12 7.5l2.6 4.9c-.2 5-1.2 8.1-2.6 9.1-1.4-1-2.4-4.1-2.6-9.1z" opacity="0.55" class="text-blossom-400" />
+  </g>
+</svg>

@@ -10,6 +10,9 @@ import MaterialCard from '~/components/astro/MaterialCard.astro';
 import ScrollReveal from '~/components/astro/ScrollReveal.astro';
 import WildFlower from '~/assets/svg/plants/WildFlower.astro';
 import Sprout from '~/assets/svg/plants/Sprout.astro';
+import Tulip from '~/assets/svg/plants/Tulip.astro';
+import Daisy from '~/assets/svg/plants/Daisy.astro';
+import Lavender from '~/assets/svg/plants/Lavender.astro';
 ---
 
 {/* Background: see SECTION BACKGROUNDS in global.css. */}
@@ -25,13 +28,21 @@ import Sprout from '~/assets/svg/plants/Sprout.astro';
       class="anim-sway anim-delay-3 absolute right-6 top-10 hidden text-sprout-300 opacity-70 lg:block"
     />
     <WildFlower
-      size={26}
+      size={35}
       class="anim-sway anim-delay-1 absolute right-6 top-[52%] hidden text-sprout-400 xl:block"
     />
-    <WildFlower
-      size={18}
-      class="anim-sway absolute right-14 top-[58%] hidden text-sprout-300 xl:block"
-      petalClass="text-sun-200"
+    <Lavender
+      size={27}
+      class="anim-sway absolute right-14 top-[58%] hidden text-sprout-400 xl:block"
+    />
+    <Tulip
+      size={30}
+      class="anim-sway anim-delay-2 absolute left-6 top-[44%] hidden text-sprout-400 xl:block"
+      petalClass="text-lavender-300"
+    />
+    <Daisy
+      size={24}
+      class="anim-sway anim-delay-3 absolute left-14 top-[52%] hidden text-sprout-300 xl:block"
     />
   </div>
 
