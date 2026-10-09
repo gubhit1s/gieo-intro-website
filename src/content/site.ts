@@ -53,7 +53,7 @@ export const site = {
         portrait: null,
         achievements: [
           {
-            text: 'Giải nhì Ngữ văn kỳ thi chọn học sinh giỏi cấp quốc gia năm học 2020-2021',
+            text: 'Giải nhì Ngữ văn kỳ thi chọn học sinh giỏi cấp quốc gia 2020-2021',
             year: '2020-2021',
             level: 'quoc-gia',
           },
@@ -81,12 +81,12 @@ export const site = {
         portrait: null,
         achievements: [
           {
-            text: '9.5 điểm Ngữ văn THPT Quốc gia 2023 — thủ khoa Văn tỉnh Lâm Đồng',
+            text: '9.5 điểm Ngữ văn THPT Quốc gia 2021',
             year: '2023',
             level: 'quoc-gia',
           },
           {
-            text: 'Thủ khoa Ngữ văn kỳ thi chọn học sinh giỏi cấp tỉnh 2020-2021',
+            text: 'Thủ khoa Ngữ văn kỳ thi chọn học sinh giỏi cấp tỉnh Lâm Đồng 2020-2021',
             year: '2020-2021',
             level: 'tinh',
           },
