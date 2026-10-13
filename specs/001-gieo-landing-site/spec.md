@@ -18,7 +18,7 @@ The sowing metaphor drives the visual identity — a light, airy, light-green pa
 
 ### User Story 1 - Inspired first impression (Priority: P1)
 
-A student (or their parent) opens the Gieo site for the first time, typically from a link shared on social media. Within the first screen they see the Gieo name and seed/plant mark, read one short, confident line that reframes the gifted-student exam as achievable ("Chinh phục học sinh giỏi không khó như bạn nghĩ"), and sense a calm, growth-themed atmosphere. Subtle motion draws their eye downward and invites them to keep scrolling.
+A student (or their parent) opens the Gieo site for the first time, typically from a link shared on social media. Within the first screen they see the Gieo name and seed/plant mark, read one short, confident line about how Gieo shapes the way they read and think ("Gieo một cách đọc, ươm một cách nghĩ."), and sense a calm, growth-themed atmosphere. Subtle motion draws their eye downward and invites them to keep scrolling.
 
 **Why this priority**: This is the whole purpose of a landing site and the only section every visitor is guaranteed to see. On its own it already establishes the brand and communicates the core promise, so it is a viable standalone release.
 
@@ -126,7 +126,7 @@ A visitor who has reached the end of the page wants to stay in touch. The footer
 #### Hero
 
 - **FR-004**: The hero MUST display the Gieo brand name and brand mark.
-- **FR-005**: The hero MUST display one short inspirational headline, no longer than a single sentence, in Vietnamese; the reference line is "Chinh phục học sinh giỏi không khó như bạn nghĩ".
+- **FR-005**: The hero MUST display one short inspirational headline, no longer than a single sentence, in Vietnamese; the reference line is "Gieo một cách đọc, ươm một cách nghĩ.".
 - **FR-006**: The hero MUST play a subtle entrance animation that completes within 1 second of content becoming visible, and MUST NOT loop distractingly or delay the visitor's ability to scroll.
 - **FR-007**: The hero MUST include a visible cue that more content exists below.
 

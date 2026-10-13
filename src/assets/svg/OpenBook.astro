@@ -1,0 +1,49 @@
+---
+/**
+ * Decorative open book: green cover, cream pages with a few faint lines.
+ * Ornamental only — aria-hidden, non-interactive (FR-027).
+ *
+ * `class` colours the cover (default sprout-300) and sets size/position.
+ * Height is 9/14 of `size`.
+ */
+interface Props {
+  size?: number;
+  class?: string;
+}
+const { size = 56, class: className = 'text-sprout-300' } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 56 36"
+  width={size}
+  height={(size * 36) / 56}
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  class={className}
+>
+  {/* Cover, peeking out below the pages */}
+  <path
+    d="M2 9v24c9-3 18-3 26 2 8-5 17-5 26-2V9c-9-3-18-3-26 2-8-5-17-5-26-2z"
+    fill="currentColor"
+  />
+
+  {/* Pages */}
+  {/* Outlined, so the pages still read on the near-white post background. */}
+  <g class="text-bark-200" stroke="currentColor" stroke-width="0.9" stroke-linejoin="round">
+    <path d="M28 8c-7-5-16-5-24-2v24c8-3 17-3 24 2z" fill="#fffdf7" />
+    <path d="M28 8c7-5 16-5 24-2v24c-8-3-17-3-24 2z" fill="#fdf6e3" />
+  </g>
+  <path d="M28 8v24" stroke="currentColor" stroke-width="1" opacity="0.6" />
+
+  {/* Lines of text */}
+  <g class="text-bark-200" stroke="currentColor" stroke-width="1.1" stroke-linecap="round">
+    <path d="M8 11.5c5-1.5 10-1.3 15 .6" />
+    <path d="M8 16c5-1.5 10-1.3 15 .6" />
+    <path d="M8 20.5c4-1.2 7-1.2 10 0" />
+    <path d="M33 12.1c5-1.9 10-2.1 15-.6" />
+    <path d="M33 16.6c5-1.9 10-2.1 15-.6" />
+    <path d="M33 21.1c4-1.4 8-1.6 12-.8" />
+  </g>
+</svg>

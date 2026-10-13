@@ -148,9 +148,9 @@ test.describe('accessibility', () => {
     await page.goto('/');
 
     // Every plant/seed SVG must be aria-hidden; none may take a focus stop.
-    const exposedDecorations = await page.locator('svg:not([aria-hidden="true"])').evaluateAll(
-      (svgs) => svgs.filter((s) => !s.getAttribute('role')).length
-    );
+    const exposedDecorations = await page
+      .locator('svg:not([aria-hidden="true"])')
+      .evaluateAll((svgs) => svgs.filter((s) => !s.getAttribute('role')).length);
     expect(exposedDecorations).toBe(0);
 
     await expect(page.locator('svg[tabindex]')).toHaveCount(0);

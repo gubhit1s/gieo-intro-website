@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^7.0.1",
+    "@fontsource-variable/lora": "^5.3.0",
     "@fontsource-variable/playpen-sans": "^5.3.0",
     "@fontsource/be-vietnam-pro": "^5.3.0",
     "@fontsource/courgette": "^5.3.0",

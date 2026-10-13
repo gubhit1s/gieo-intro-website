@@ -27,7 +27,7 @@ describe('brand and hero', () => {
   });
 
   it('carries the inspirational headline verbatim (FR-005)', () => {
-    expect(site.hero.headline).toBe('Chinh phục học sinh giỏi không khó như bạn nghĩ');
+    expect(site.hero.headline).toBe('Gieo một cách đọc, ươm một cách nghĩ.');
   });
 
   it('has two labelled hero actions that point at in-page anchors', () => {
@@ -77,22 +77,23 @@ describe('team section (FR-008, FR-010, FR-011)', () => {
   });
 });
 
-describe('materials section (FR-013, FR-014, FR-015)', () => {
+describe('materials section (FR-013)', () => {
   it('is headed "Những tài liệu của chúng mình" with a subtitle', () => {
     expect(site.materials.heading).toBe('Những tài liệu của chúng mình');
     expect(site.materials.subtitle.length).toBeGreaterThan(0);
   });
 
-  it('has at least three entries', () => {
-    expect(site.materials.entries.length).toBeGreaterThanOrEqual(3);
+  it('labels the library page and its links', () => {
+    expect(site.materials.viewAllLabel.length).toBeGreaterThan(0);
+    expect(site.materials.readLabel.length).toBeGreaterThan(0);
+    expect(site.materials.library.heading.length).toBeGreaterThan(0);
+    expect(site.materials.library.backLabel.length).toBeGreaterThan(0);
+    expect(site.materials.library.otherPostsHeading.length).toBeGreaterThan(0);
   });
 
-  it('has no real links — every entry href is null, so there are no dead ends', () => {
-    expect(site.materials.entries.every((entry) => entry.href === null)).toBe(true);
-  });
-
-  it('marks every entry as a placeholder', () => {
-    expect(site.materials.entries.every((entry) => entry.isPlaceholder === true)).toBe(true);
+  it('sends the "Kho tài liệu" nav link to the library page', () => {
+    const library = site.nav.links.find((link) => link.label === 'Kho tài liệu');
+    expect(library?.href).toBe('/tai-lieu');
   });
 });
 
@@ -157,6 +158,6 @@ describe('content hygiene across the whole module', () => {
     // If the file were saved as anything but UTF-8, these would not round-trip.
     expect(site.team.members[0].achievements[0]!.text).toContain('Ngữ văn');
     expect(site.team.members[1].achievements[0]!.text).toContain('Lâm Đồng');
-    expect(site.hero.headline).toContain('Chinh phục');
+    expect(site.hero.headline).toContain('ươm một cách nghĩ');
   });
 });

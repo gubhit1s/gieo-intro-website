@@ -1,0 +1,68 @@
+---
+/**
+ * Renders a post's body blocks (src/content/posts.ts) as plain elements.
+ * All styling comes from `.post-body` in global.css.
+ */
+import type { PostBlock } from '~/content/types';
+
+interface Props {
+  blocks: readonly PostBlock[];
+}
+
+const { blocks } = Astro.props;
+---
+
+<div class="post-body">
+  {blocks.map((block) => {
+    switch (block.type) {
+      case 'heading':
+        return block.level === 2 ? <h2>{block.text}</h2> : <h3>{block.text}</h3>;
+      case 'paragraph':
+        return <p>{block.text}</p>;
+      case 'list': {
+        const List = block.ordered ? 'ol' : 'ul';
+        return (
+          <List>
+            {block.items.map((item) => (
+              <li>
+                {item.lead && (
+                  <>
+                    <strong>{item.lead}</strong>{' '}
+                  </>
+                )}
+                {item.text}
+              </li>
+            ))}
+          </List>
+        );
+      }
+      case 'quote':
+        return (
+          <blockquote>
+            {/* Quote marks go inside the text, not as separate template text,
+                  so no whitespace can creep in between mark and word. */}
+            <p>
+              {block.lines.map((line, index) => (
+                <>
+                  {index > 0 && <br />}
+                  {`${index === 0 ? '“' : ''}${line}${index === block.lines.length - 1 ? '”' : ''}`}
+                </>
+              ))}
+            </p>
+            <p>— {block.author}</p>
+          </blockquote>
+        );
+      case 'note':
+        return (
+          <aside class="post-note">
+            {block.lead && (
+              <>
+                <strong>{block.lead}</strong>{' '}
+              </>
+            )}
+            {block.text}
+          </aside>
+        );
+    }
+  })}
+</div>

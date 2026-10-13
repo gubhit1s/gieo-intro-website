@@ -4,14 +4,25 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import MaterialsSection from '~/sections/MaterialsSection.astro';
 import SiteFooter from '~/sections/SiteFooter.astro';
 import { site } from '~/content/site';
+import type { MaterialEntry } from '~/content/types';
 
 /** Materials section rendering (FR-013 … FR-016). */
 describe('MaterialsSection', () => {
+  // Fixture entries in the shape src/lib/posts.ts produces from the Markdown
+  // posts. Four of them, to prove the section caps the preview at three.
+  const entries: MaterialEntry[] = [1, 2, 3, 4].map((n) => ({
+    id: `bai-${n}`,
+    title: `Bài viết số ${n}`,
+    description: `Tóm tắt bài viết số ${n}.`,
+    href: `/tai-lieu/bai-${n}`,
+  }));
+  const shown = entries.slice(0, 3);
+
   let html: string;
 
   beforeAll(async () => {
     const container = await AstroContainer.create();
-    html = await container.renderToString(MaterialsSection);
+    html = await container.renderToString(MaterialsSection, { props: { entries } });
   });
 
   it('renders the heading and subtitle (FR-013)', () => {
@@ -20,24 +31,42 @@ describe('MaterialsSection', () => {
     expect(html).toMatch(/<h2/);
   });
 
-  it('renders at least three entries (FR-014)', () => {
-    expect(site.materials.entries.length).toBeGreaterThanOrEqual(3);
-    for (const entry of site.materials.entries) {
+  it('previews the first three posts with title and summary', () => {
+    for (const entry of shown) {
       expect(html).toContain(entry.title);
       expect(html).toContain(entry.description);
     }
+    expect(html).not.toContain(entries[3]!.title);
   });
 
-  it('renders every placeholder entry as a non-interactive article (FR-015)', () => {
-    const articles = html.match(/<article/g) ?? [];
-    expect(articles).toHaveLength(site.materials.entries.length);
+  it('features the first entry ahead of the others', () => {
+    const [featured, ...rest] = shown;
+    const featuredAt = html.indexOf(featured!.title);
+    for (const entry of rest) {
+      expect(featuredAt).toBeLessThan(html.indexOf(entry.title));
+    }
+    // Only the lead article gets the large title.
+    expect(html.match(/text-4xl/g) ?? []).toHaveLength(2); // section h2 + featured h3
   });
 
-  it('emits no links at all while every href is null — no dead ends (FR-015)', () => {
-    expect(site.materials.entries.every((entry) => entry.href === null)).toBe(true);
-    expect(html).not.toMatch(/<a\s/);
+  it('links every entry to its post page, and the section to the library', () => {
+    for (const entry of shown) {
+      expect(html).toContain(`href="${entry.href}"`);
+    }
+    expect(html).toContain('href="/tai-lieu"');
+    expect(html).toContain(site.materials.viewAllLabel);
+  });
+
+  it('never links to nowhere', () => {
     expect(html).not.toMatch(/href="#"/);
     expect(html).not.toMatch(/href=""/);
+  });
+
+  it('still renders the heading and library link when there are no posts', async () => {
+    const container = await AstroContainer.create();
+    const empty = await container.renderToString(MaterialsSection, { props: { entries: [] } });
+    expect(empty).toContain(site.materials.heading);
+    expect(empty).toContain('href="/tai-lieu"');
   });
 });
 

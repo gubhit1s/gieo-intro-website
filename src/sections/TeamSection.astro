@@ -31,10 +31,7 @@ import Lavender from '~/assets/svg/plants/Lavender.astro';
       size={35}
       class="anim-sway anim-delay-2 absolute left-5 top-[46%] hidden text-sprout-400 xl:block"
     />
-    <Daisy
-      size={27}
-      class="anim-sway absolute left-14 top-[52%] hidden text-sprout-400 xl:block"
-    />
+    <Daisy size={27} class="anim-sway absolute left-14 top-[52%] hidden text-sprout-400 xl:block" />
     <Tulip
       size={30}
       class="anim-sway anim-delay-1 absolute right-6 top-[56%] hidden text-sprout-400 xl:block"
@@ -48,19 +45,17 @@ import Lavender from '~/assets/svg/plants/Lavender.astro';
   <div class="section-shell relative z-10">
     <h2
       id="gieo-team-heading"
-      class="text-center font-display text-3xl font-semibold text-sprout-900 sm:text-4xl"
+      class="text-center font-serif text-3xl font-medium text-sprout-900 sm:text-4xl"
     >
       {site.team.heading}
     </h2>
 
     <div class="mt-12 grid gap-6 md:grid-cols-2 md:gap-8">
-      {
-        site.team.members.map((member, index) => (
-          <ScrollReveal delay={index * 0.12} class="h-full">
-            <TeamMemberCard member={member} />
-          </ScrollReveal>
-        ))
-      }
+      {site.team.members.map((member, index) => (
+        <ScrollReveal delay={index * 0.12} class="h-full">
+          <TeamMemberCard member={member} />
+        </ScrollReveal>
+      ))}
     </div>
   </div>
 </section>

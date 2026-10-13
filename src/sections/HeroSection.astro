@@ -6,14 +6,14 @@
  * brand mark and name sit in SiteHeader above it. The headline text is rendered into the static HTML by the
  * island's server render, so it is present before any JavaScript executes.
  */
-import Sprout from '~/assets/svg/plants/Sprout.astro';
-import LeafPair from '~/assets/svg/plants/LeafPair.astro';
 import WildFlower from '~/assets/svg/plants/WildFlower.astro';
 import Tulip from '~/assets/svg/plants/Tulip.astro';
 import Daisy from '~/assets/svg/plants/Daisy.astro';
-import Lavender from '~/assets/svg/plants/Lavender.astro';
 import HeroHeadline from '~/components/astro/HeroHeadline.astro';
 import HeroActions from '~/components/astro/HeroActions.astro';
+import { Picture } from 'astro:assets';
+import { site } from '~/content/site';
+import heroIllustration from '~/assets/images/hero-reading.png';
 ---
 
 <section
@@ -21,55 +21,53 @@ import HeroActions from '~/components/astro/HeroActions.astro';
   aria-labelledby="gieo-hero-heading"
   class="relative flex min-h-[calc(100svh-var(--header-h))] flex-col overflow-hidden bg-gradient-to-b from-sprout-100 to-sprout-50"
 >
-  {/* Decorative plants, kept to the left and right edges so they never
-      overlap the centred text column (FR-026, FR-027). The flowers need the
-      side room of a 1024px+ screen; below that only the small sprigs show. */}
+  {/* A few flowers in the side gutters (FR-026, FR-027). The hero content
+      is wider than other sections, so the gutters only have room for them
+      from 1536px. */}
   <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
-    <LeafPair
-      size={104}
-      class="anim-drift absolute -left-6 top-24 hidden text-sprout-300 opacity-70 sm:block lg:left-10"
-    />
-    <Sprout
-      size={76}
-      class="anim-sway anim-delay-1 absolute right-4 top-32 hidden text-sprout-400 opacity-60 sm:block lg:right-20"
-    />
-
-    <Lavender
-      size={27}
-      class="anim-sway anim-delay-2 absolute left-[3%] top-[58%] hidden text-sprout-400 lg:block"
-    />
     <WildFlower
       size={38}
-      class="anim-sway anim-delay-1 absolute left-[6%] top-[52%] hidden text-sprout-400 lg:block"
+      class="anim-sway anim-delay-1 absolute left-[2%] top-[52%] hidden text-sprout-400 2xl:block"
     />
     <Tulip
       size={30}
-      class="anim-sway anim-delay-3 absolute left-[9.5%] top-[60%] hidden text-sprout-400 lg:block"
+      class="anim-sway anim-delay-3 absolute left-[4.5%] top-[58%] hidden text-sprout-400 2xl:block"
     />
-
     <Daisy
       size={32}
-      class="anim-sway absolute right-[10%] top-[55%] hidden text-sprout-400 lg:block"
-    />
-    <WildFlower
-      size={35}
-      class="anim-sway anim-delay-2 absolute right-[6.5%] top-[60%] hidden text-sprout-400 lg:block"
-      petalClass="text-blossom-200"
-    />
-    <Lavender
-      size={24}
-      class="anim-sway anim-delay-1 absolute right-[3%] top-[56%] hidden text-sprout-300 lg:block"
+      class="anim-sway absolute right-[3%] top-[55%] hidden text-sprout-400 2xl:block"
     />
   </div>
 
-  <div
-    class="section-shell relative z-10 flex flex-1 flex-col items-center justify-center py-20 text-center"
-  >
-    {/* The brand lockup lives in SiteHeader, directly above. */}
-    <HeroHeadline />
+  {/* Stacked below 1280px with the illustration on top and the text centred;
+      side by side from 1280px, text left-aligned. Wider than section-shell
+      so the illustration can be larger. Bottom padding exceeds top padding,
+      which sits the content slightly above centre. */}
+  <div class="relative z-10 mx-auto flex w-full max-w-[84rem] flex-1 flex-col items-center justify-center gap-12 px-4 pb-16 pt-8 md:px-8 xl:flex-row xl:gap-14 xl:pb-48 xl:pt-4">
+    <div class="flex flex-col items-center text-center xl:w-[48%] xl:shrink-0 xl:items-start xl:text-left">
+      {/* The brand lockup lives in SiteHeader, directly above. */}
+      <HeroHeadline />
 
-    <div class="mt-10 w-full">
-      <HeroActions />
+      <div class="mt-8 w-full">
+        <HeroActions />
+      </div>
+    </div>
+
+    {/* First visually on small screens, second in the DOM so the <h1> still
+        comes first for screen readers. */}
+    <div class="order-first w-full max-w-2xl xl:order-none xl:min-w-0 xl:flex-1 xl:max-w-none">
+      {/* The hero is the first thing on screen, so load eagerly at high
+          priority. Astro emits AVIF/WebP at several widths from the PNG. */}
+      <Picture
+        src={heroIllustration}
+        alt={site.hero.illustrationAlt}
+        formats={['avif', 'webp']}
+        widths={[480, 800, 1200, 1600]}
+        sizes="(min-width: 1280px) 52vw, (min-width: 672px) 42rem, 100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="h-auto w-full rounded-3xl shadow-lg shadow-sprout-900/10"
+      />
     </div>
   </div>
 </section>

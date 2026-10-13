@@ -89,7 +89,7 @@ The single most important check: it verifies the architectural claim behind the 
 
 ```bash
 npm run build
-grep -c "Chinh phục học sinh giỏi" dist/index.html        # expect >= 1
+grep -c "Gieo một cách đọc" dist/index.html        # expect >= 1
 grep -c "Nguyễn Thị Hà Giang"       dist/index.html        # expect >= 1
 grep -c "Nguyễn Hồng Bảo Quyên"     dist/index.html        # expect >= 1
 grep -c "kỹ năng phản đề"           dist/index.html        # expect >= 1

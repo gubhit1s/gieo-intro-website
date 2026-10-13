@@ -49,7 +49,7 @@ The single exported object. Every section reads its content from here.
 
 | Field | Type | Rule | Requirement |
 |---|---|---|---|
-| `headline` | `string` | one sentence, Vietnamese. Seed value: `"Chinh phục học sinh giỏi không khó như bạn nghĩ"` | FR-005 |
+| `headline` | `string` | one sentence, Vietnamese. Seed value: `"Gieo một cách đọc, ươm một cách nghĩ."` | FR-005 |
 | `subheadline` | `string \| null` | optional supporting line | — |
 | `scrollCueLabel` | `string` | accessible label for the scroll cue | FR-007, FR-031 |
 

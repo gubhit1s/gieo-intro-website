@@ -47,15 +47,15 @@ const year = new Date().getFullYear();
     </div>
 
     <ul class="flex items-center gap-4">
-      {
-        site.social.map((link) => (
-          <li>
-            <SocialLink link={link} />
-          </li>
-        ))
-      }
+      {site.social.map((link) => (
+        <li>
+          <SocialLink link={link} />
+        </li>
+      ))}
     </ul>
 
-    <p class="text-xs text-ink-muted">© {year} {site.brand.name}</p>
+    <p class="text-xs text-ink-muted">
+      © {year} {site.brand.name}
+    </p>
   </div>
 </footer>

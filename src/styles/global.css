@@ -73,11 +73,24 @@
   --color-lavender-300: #bba7e2;
   --color-lavender-400: #9d85d0;
 
+  /* Warm near-white reading surface for long-form posts: lighter than any
+     section gradient, so body text has the most contrast where it matters. */
+  --color-paper: #fffdf8;
+  /* Reading text on paper: a warm near-black, darker than --color-ink, as
+     long-form text on a light page reads best close to print black. */
+  --color-print: #1c1b18;
+  --color-print-muted: #46443d;
+
   --color-ink: #26301f;
   --color-ink-muted: #4a553f;
   --color-seed: #e8b04b;
 
+  /* Friendly rounded face: the hero headline and anything playful. */
   --font-display: 'Playpen Sans Variable', 'Be Vietnam Pro', system-ui, sans-serif;
+  /* The literary voice: section headings, resource titles and people's
+     names. Keep it to titles — body copy, buttons and nav stay sans so the
+     page still reads as friendly to students, not as an academic journal. */
+  --font-serif: 'Lora Variable', Georgia, 'Times New Roman', serif;
   --font-body: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
   /* The "Gieo" wordmark only. Courgette ships no Vietnamese glyphs and a
      script face gets hard to read past one word, so never use font-brand for
@@ -145,6 +158,132 @@
 }
 
 @layer components {
+  /**
+   * Post body (PostBody.astro). Blocks render as bare elements, so they are
+   * styled here by descendant selector.
+   *
+   * The reverse of the rest of the site: long-form reading text is SERIF
+   * (Lora) — Vietnamese readers know study notes in a serif like Times, and
+   * its stacked diacritics read more clearly at length — while section
+   * headings are the bold SANS body face, so they stand apart from the text.
+   */
+  .post-body {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    line-height: 1.85;
+    color: var(--color-print);
+  }
+
+  .post-body > * + * {
+    margin-top: 1.25rem;
+  }
+
+  .post-body > :first-child {
+    margin-top: 0;
+  }
+
+  .post-body h2 {
+    margin-top: 3.25rem;
+    font-family: var(--font-body);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .post-body h3 {
+    margin-top: 2.25rem;
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+
+  .post-body h2 + *,
+  .post-body h3 + * {
+    margin-top: 1rem;
+  }
+
+  .post-body strong {
+    font-weight: 600;
+    color: var(--color-print);
+  }
+
+  .post-body ul,
+  .post-body ol {
+    padding-left: 1.4rem;
+    list-style: disc;
+  }
+
+  .post-body ol {
+    list-style: decimal;
+  }
+
+  .post-body li + li {
+    margin-top: 0.85rem;
+  }
+
+  .post-body li::marker {
+    color: var(--color-sprout-500);
+  }
+
+  /* Numbers carry meaning (step order), so they need text contrast. */
+  .post-body ol > li::marker {
+    font-weight: 600;
+    color: var(--color-sprout-700);
+  }
+
+  /* Quotation first, attribution ("— Author") as the paragraph after it. */
+  .post-body blockquote {
+    border-left: 3px solid var(--color-sprout-300);
+    padding: 0.25rem 0 0.25rem 1.5rem;
+  }
+
+  .post-body blockquote + blockquote {
+    margin-top: 1.75rem;
+  }
+
+  .post-body blockquote p:first-child {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-style: italic;
+    line-height: 1.65;
+    color: var(--color-sprout-900);
+  }
+
+  .post-body blockquote p + p {
+    margin-top: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-print-muted);
+  }
+
+  /* A key takeaway, written in Markdown as <aside class="post-note">. */
+  .post-body .post-note {
+    margin-block: 2rem;
+    border-radius: 1.5rem;
+    background-color: var(--color-sun-100);
+    padding: 1.5rem 1.75rem;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.7;
+    color: var(--color-sprout-900);
+  }
+
+  /* A note's label ("Có thể khái quát:") — upright, in the earth accent. */
+  .post-body .post-note strong {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--color-bark-700);
+  }
+
+  @media (min-width: 640px) {
+    .post-body h2 {
+      font-size: 1.75rem;
+    }
+  }
+
   /**
    * Scroll reveal (FR-029, FR-030).
    *

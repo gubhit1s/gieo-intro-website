@@ -30,21 +30,28 @@ const petals = Array.from({ length: 10 }, (_, i) => {
   focusable="false"
   class={className}
 >
-  <path d="M12 47c.6-10 .4-19 0-29" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-  <path d="M12.2 36c4.6-1.2 7.4-4.8 7.8-9.4-4.4.6-7.4 3.8-7.8 9.4z" fill="currentColor" opacity="0.7" />
+  <path
+    d="M12 47c.6-10 .4-19 0-29"
+    stroke="currentColor"
+    stroke-width="1.6"
+    stroke-linecap="round"
+  />
+  <path
+    d="M12.2 36c4.6-1.2 7.4-4.8 7.8-9.4-4.4.6-7.4 3.8-7.8 9.4z"
+    fill="currentColor"
+    opacity="0.7"
+  />
   <g class="text-sprout-200" stroke="currentColor" stroke-width="0.6">
-    {
-      petals.map((p) => (
-        <ellipse
-          cx={p.cx.toFixed(2)}
-          cy={p.cy.toFixed(2)}
-          rx="1.7"
-          ry="3.6"
-          fill="#ffffff"
-          transform={`rotate(${p.deg} ${p.cx.toFixed(2)} ${p.cy.toFixed(2)})`}
-        />
-      ))
-    }
+    {petals.map((p) => (
+      <ellipse
+        cx={p.cx.toFixed(2)}
+        cy={p.cy.toFixed(2)}
+        rx="1.7"
+        ry="3.6"
+        fill="#ffffff"
+        transform={`rotate(${p.deg} ${p.cx.toFixed(2)} ${p.cy.toFixed(2)})`}
+      />
+    ))}
   </g>
   <circle cx="12" cy="12" r="2.8" class="text-sun-400" fill="currentColor" />
 </svg>

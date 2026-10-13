@@ -31,9 +31,7 @@ test.describe('static HTML carries all content', () => {
     // Materials
     expect(html).toContain(site.materials.heading);
     expect(html).toContain(site.materials.subtitle);
-    for (const entry of site.materials.entries) {
-      expect(html).toContain(entry.title);
-    }
+    expect(html).toContain(site.materials.viewAllLabel);
 
     // Course — description, every outcome, and the CTA label
     expect(html).toContain(site.course.heading);

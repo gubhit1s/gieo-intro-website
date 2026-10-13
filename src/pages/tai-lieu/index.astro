@@ -1,0 +1,54 @@
+---
+/**
+ * The post library: every post in src/content/posts.ts, as a grid of cards.
+ */
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import SiteHeader from '~/sections/SiteHeader.astro';
+import SiteFooter from '~/sections/SiteFooter.astro';
+import PostCard from '~/components/astro/PostCard.astro';
+import ScrollReveal from '~/components/astro/ScrollReveal.astro';
+import { site } from '~/content/site';
+import { getPosts, toMaterialEntry } from '~/lib/posts';
+
+const entries = getPosts().map(toMaterialEntry);
+---
+
+<BaseLayout
+  title={`${site.materials.library.heading} — ${site.brand.name}`}
+  description={site.materials.subtitle}
+>
+  <SiteHeader slot="header" onHome={false} current="/tai-lieu" />
+
+  {/* id="noi-dung" is the skip link's target on every page (BaseLayout). */}
+  <section
+    id="noi-dung"
+    aria-labelledby="gieo-library-heading"
+    class="bg-gradient-to-b from-sprout-100 to-sprout-50 py-16 sm:py-24"
+  >
+    <div class="section-shell">
+      <header class="mx-auto max-w-2xl text-center">
+        <h1
+          id="gieo-library-heading"
+          class="font-serif text-4xl font-medium text-sprout-900 sm:text-5xl"
+        >
+          {site.materials.library.heading}
+        </h1>
+        <p class="mt-4 text-pretty text-base text-ink-muted sm:text-lg">
+          {site.materials.subtitle}
+        </p>
+      </header>
+
+      <ul class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {entries.map((entry, index) => (
+          <li>
+            <ScrollReveal delay={Math.min(index, 5) * 0.06} class="h-full">
+              <PostCard entry={entry} />
+            </ScrollReveal>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <SiteFooter />
+</BaseLayout>

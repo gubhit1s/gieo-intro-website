@@ -39,10 +39,7 @@ import Lavender from '~/assets/svg/plants/Lavender.astro';
       size={35}
       class="anim-sway anim-delay-2 absolute left-5 top-[50%] hidden text-sprout-400 lg:block"
     />
-    <Tulip
-      size={27}
-      class="anim-sway absolute left-14 top-[56%] hidden text-sprout-400 xl:block"
-    />
+    <Tulip size={27} class="anim-sway absolute left-14 top-[56%] hidden text-sprout-400 xl:block" />
     <Daisy
       size={30}
       class="anim-sway anim-delay-1 absolute right-5 top-[58%] hidden text-sprout-400 lg:block"
@@ -57,7 +54,7 @@ import Lavender from '~/assets/svg/plants/Lavender.astro';
     <div class="mx-auto max-w-3xl text-center">
       <h2
         id="gieo-course-heading"
-        class="font-display text-3xl font-semibold text-sprout-900 sm:text-4xl"
+        class="font-serif text-3xl font-medium text-sprout-900 sm:text-4xl"
       >
         {site.course.heading}
       </h2>
@@ -71,7 +68,9 @@ import Lavender from '~/assets/svg/plants/Lavender.astro';
         FR-031 depends on. The reveal wrapper must stay outside. */}
     <ScrollReveal class="mx-auto mt-12 block max-w-4xl">
       <ul class="grid gap-4 sm:grid-cols-2">
-        {site.course.outcomes.map((outcome) => <OutcomeItem outcome={outcome} />)}
+        {site.course.outcomes.map((outcome) => (
+          <OutcomeItem outcome={outcome} />
+        ))}
       </ul>
     </ScrollReveal>
 

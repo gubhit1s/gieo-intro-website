@@ -18,7 +18,7 @@ test.describe('reduced motion', () => {
     }
 
     for (const outcome of site.course.outcomes) {
-      const item = page.getByText(outcome.text, { exact: true });
+      const item = page.locator('#khoa-hoc').getByText(outcome.text, { exact: true });
       await item.scrollIntoViewIfNeeded();
       await expect(item).toBeVisible();
     }
@@ -57,10 +57,7 @@ test.describe('reduced motion', () => {
     await page.waitForTimeout(500);
 
     const running = await page.evaluate(
-      () =>
-        document
-          .getAnimations()
-          .filter((animation) => animation.playState === 'running').length
+      () => document.getAnimations().filter((animation) => animation.playState === 'running').length
     );
     expect(running).toBe(0);
   });
@@ -75,7 +72,9 @@ test.describe('motion allowed', () => {
     await page.waitForTimeout(1200);
 
     for (const outcome of site.course.outcomes) {
-      await expect(page.getByText(outcome.text, { exact: true })).toBeVisible();
+      await expect(
+        page.locator('#khoa-hoc').getByText(outcome.text, { exact: true })
+      ).toBeVisible();
     }
   });
 

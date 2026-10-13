@@ -72,13 +72,17 @@ test.describe('call to action — present but deliberately inert', () => {
     // The page uses scroll-behavior: smooth, so the programmatic scroll above
     // is still animating. Let it settle before taking the baseline, otherwise
     // the test measures the scroll easing rather than the button's behaviour.
-    await page.waitForFunction(() => {
-      const w = window as unknown as { __y?: number; __stable?: number };
-      const y = window.scrollY;
-      w.__stable = w.__y === y ? (w.__stable ?? 0) + 1 : 0;
-      w.__y = y;
-      return (w.__stable ?? 0) > 3;
-    }, null, { timeout: 5000 });
+    await page.waitForFunction(
+      () => {
+        const w = window as unknown as { __y?: number; __stable?: number };
+        const y = window.scrollY;
+        w.__stable = w.__y === y ? (w.__stable ?? 0) + 1 : 0;
+        w.__y = y;
+        return (w.__stable ?? 0) > 3;
+      },
+      null,
+      { timeout: 5000 }
+    );
 
     // Compare text content, not innerHTML: the button's hover/press animation
     // legitimately mutates inline transform styles, which is not "accumulated
@@ -124,9 +128,9 @@ test.describe('social links', () => {
   test('has no dead links anywhere on the page (FR-015, SC-008)', async ({ page }) => {
     await page.goto('/');
 
-    const hrefs = await page.locator('a[href]').evaluateAll((anchors) =>
-      anchors.map((a) => a.getAttribute('href') ?? '')
-    );
+    const hrefs = await page
+      .locator('a[href]')
+      .evaluateAll((anchors) => anchors.map((a) => a.getAttribute('href') ?? ''));
 
     expect(hrefs.length).toBeGreaterThan(0);
     for (const href of hrefs) {
@@ -135,13 +139,18 @@ test.describe('social links', () => {
     }
   });
 
-  test('material placeholder cards are not interactive (FR-015)', async ({ page }) => {
+  test('every material entry opens its post page (FR-016)', async ({ page }) => {
     await page.goto('/');
 
-    const materialLinks = page.locator('#tai-lieu a');
-    await expect(materialLinks).toHaveCount(0);
+    const hrefs = await page
+      .locator('#tai-lieu a')
+      .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+    expect(hrefs).toContain('/tai-lieu');
 
-    const articles = page.locator('#tai-lieu article');
-    await expect(articles).toHaveCount(site.materials.entries.length);
+    for (const href of hrefs.filter((href) => href !== '/tai-lieu')) {
+      expect(href).toMatch(/^\/tai-lieu\/[a-z0-9-]+$/);
+      const response = await page.request.get(href!);
+      expect(response.ok()).toBe(true);
+    }
   });
 });

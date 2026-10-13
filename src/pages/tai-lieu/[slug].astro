@@ -1,0 +1,177 @@
+---
+/**
+ * One post. The body blocks render through PostBody (styled by `.post-body`
+ * in global.css); up to two other posts follow it.
+ */
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import SiteHeader from '~/sections/SiteHeader.astro';
+import SiteFooter from '~/sections/SiteFooter.astro';
+import PostCard from '~/components/astro/PostCard.astro';
+import PostBody from '~/components/astro/PostBody.astro';
+import BookStack from '~/assets/svg/BookStack.astro';
+import OpenBook from '~/assets/svg/OpenBook.astro';
+import LeafPair from '~/assets/svg/plants/LeafPair.astro';
+import Tulip from '~/assets/svg/plants/Tulip.astro';
+import Daisy from '~/assets/svg/plants/Daisy.astro';
+import WildFlower from '~/assets/svg/plants/WildFlower.astro';
+import Lavender from '~/assets/svg/plants/Lavender.astro';
+import { site } from '~/content/site';
+import type { MaterialEntry, Post } from '~/content/types';
+import { formatPostDate, getPosts, toMaterialEntry } from '~/lib/posts';
+
+export function getStaticPaths() {
+  const posts = getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: {
+      post,
+      others: posts
+        .filter((other) => other.slug !== post.slug)
+        .slice(0, 2)
+        .map(toMaterialEntry),
+    },
+  }));
+}
+
+interface Props {
+  post: Post;
+  others: MaterialEntry[];
+}
+
+const { post, others } = Astro.props;
+---
+
+<BaseLayout title={`${post.title} — ${site.brand.name}`} description={post.summary}>
+  <SiteHeader slot="header" onHome={false} current="/tai-lieu" />
+
+  {/* id="noi-dung" is the skip link's target on every page (BaseLayout). */}
+  <article
+    id="noi-dung"
+    aria-labelledby="gieo-post-title"
+    class="relative overflow-hidden bg-paper pb-20 pt-10 sm:pb-28 sm:pt-14"
+  >
+    {/* Books, leaves and flowers down both side margins, desktop only.
+        1024–1279px: each margin is at least 128px, so items stay small and
+        within 112px of the edge. 1280px+: margins are 256px or more, so items
+        grow (CSS width wins over the SVG width attribute) and move in from
+        the edge. Neither reaches the 768px text column (FR-026, FR-027). */}
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 hidden select-none lg:block"
+    >
+      <BookStack
+        size={64}
+        class="anim-sway absolute left-8 top-[5%] xl:left-[5%] xl:h-auto xl:w-24"
+      />
+      <LeafPair
+        size={56}
+        class="anim-drift absolute left-6 top-[22%] text-sprout-300 xl:left-[7%] xl:h-auto xl:w-20"
+      />
+      <Tulip
+        size={26}
+        class="anim-sway anim-delay-2 absolute left-8 top-[40%] text-sprout-400 xl:left-[5%] xl:h-auto xl:w-9"
+      />
+      <Daisy
+        size={22}
+        class="anim-sway anim-delay-1 absolute left-16 top-[42%] text-sprout-300 xl:left-[8.5%] xl:h-auto xl:w-8"
+      />
+      <OpenBook
+        size={68}
+        class="anim-drift anim-delay-3 absolute left-6 top-[58%] text-sprout-300 xl:left-[4%] xl:h-auto xl:w-28"
+      />
+      <BookStack
+        size={56}
+        class="anim-sway anim-delay-1 absolute left-8 top-[76%] xl:left-[6%] xl:h-auto xl:w-20"
+      />
+      <Lavender
+        size={24}
+        class="anim-sway absolute left-10 top-[92%] text-sprout-400 xl:left-[7%] xl:h-auto xl:w-8"
+      />
+
+      <WildFlower
+        size={34}
+        class="anim-sway anim-delay-1 absolute right-10 top-[10%] text-sprout-400 xl:right-[8%] xl:h-auto xl:w-11"
+      />
+      <Lavender
+        size={24}
+        class="anim-sway anim-delay-3 absolute right-20 top-[11%] text-sprout-300 xl:right-[5%] xl:h-auto xl:w-8"
+      />
+      <OpenBook
+        size={68}
+        class="anim-drift absolute right-6 top-[30%] text-sun-300 xl:right-[4%] xl:h-auto xl:w-28"
+      />
+      <LeafPair
+        size={50}
+        class="anim-drift anim-delay-2 absolute right-8 top-[49%] text-sprout-300 xl:right-[6%] xl:h-auto xl:w-20"
+      />
+      <BookStack
+        size={56}
+        class="anim-sway anim-delay-2 absolute right-8 top-[67%] xl:right-[5%] xl:h-auto xl:w-24"
+      />
+      <WildFlower
+        size={30}
+        class="anim-sway absolute right-12 top-[86%] text-sprout-400 xl:right-[7%] xl:h-auto xl:w-10"
+        petalClass="text-blossom-200"
+      />
+    </div>
+
+    <div class="relative z-10 mx-auto w-full max-w-3xl px-4 md:px-8">
+      <a
+        href="/tai-lieu"
+        class="inline-flex items-center gap-1.5 rounded-full text-sm font-semibold text-sprout-700 transition-colors hover:text-sprout-900"
+      >
+        <span aria-hidden="true">←</span>
+        {site.materials.library.backLabel}
+      </a>
+
+      <header class="mt-8 border-b border-sprout-200 pb-10">
+        <h1
+          id="gieo-post-title"
+          class="font-serif text-4xl font-medium leading-snug text-sprout-900 sm:text-5xl"
+        >
+          {post.title}
+        </h1>
+        <p class="mt-4 text-sm text-print-muted">
+          {site.materials.library.postedByLabel}{' '}
+          <span class="font-semibold text-print">{post.author}</span>
+          <span aria-hidden="true" class="mx-1.5">
+            ·
+          </span>
+          <time datetime={post.publishedAt}>{formatPostDate(post.publishedAt)}</time>
+        </p>
+        <p class="mt-2 font-serif text-lg font-semibold italic leading-relaxed text-bark-600 sm:text-xl">
+          {post.summary}
+        </p>
+      </header>
+
+      <div class="mt-10">
+        <PostBody blocks={post.body} />
+      </div>
+    </div>
+  </article>
+
+  {others.length > 0 && (
+    <section
+      aria-labelledby="gieo-other-posts"
+      class="bg-gradient-to-b from-paper to-sprout-50 pb-20 sm:pb-28"
+    >
+      <div class="mx-auto w-full max-w-3xl px-4 md:px-8">
+        <h2
+          id="gieo-other-posts"
+          class="font-serif text-2xl font-medium text-sprout-900 sm:text-3xl"
+        >
+          {site.materials.library.otherPostsHeading}
+        </h2>
+        <ul class="mt-8 grid gap-6 sm:grid-cols-2">
+          {others.map((entry) => (
+            <li>
+              <PostCard entry={entry} headingLevel="h3" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <SiteFooter />
+</BaseLayout>

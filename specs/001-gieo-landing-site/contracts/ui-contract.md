@@ -124,11 +124,11 @@ Every plant, leaf, seed and ornamental flourish:
 |---|---|---|
 | `<h2>` heading | `site.materials.heading` | FR-013 |
 | Subtitle below the heading | `site.materials.subtitle` | FR-013 |
-| ≥ 3 entry cards, identical layout | `site.materials.entries` | FR-014 |
+| ≥ 3 entries, each with topic, serif title and excerpt | `site.materials.entries` | FR-014 |
 
 **Behaviour**
 
-- Every card uses the same layout and visual treatment, so the section reads as a deliberate preview, not an unfinished area (US4 scenario 2).
+- Laid out like a literary publication, not a grid of identical cards. The first entry is featured: a larger serif title on a soft panel, with the other entries stacked beside it on wide screens and below it on narrow ones. The other entries have no border or background, so whitespace separates them. Every entry shares one structure (topic → title → excerpt), so the section still reads as a deliberate preview, not an unfinished area (US4 scenario 2).
 - With `href === null`, each card renders as a **non-interactive `<article>`**: no `<a>`, no `href`, no click handler, no focus stop, no pointer cursor (FR-015, US4 scenario 3).
 - There is no code path producing `href="#"` or `href=""` (FR-015).
 - Supplying a real `href` switches the card to an `<a>` with no other change (FR-016).

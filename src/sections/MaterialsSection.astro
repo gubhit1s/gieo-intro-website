@@ -2,10 +2,16 @@
 /**
  * Free materials — User Story 4 (FR-013 … FR-016).
  *
- * Entry copy is placeholder in this release. Every card shares one layout so
- * the section reads as a deliberate preview rather than an unfinished area.
+ * A preview of the post library, laid out like a literary publication: the
+ * first post is featured, up to two more follow as a quieter list, and
+ * whitespace rather than card borders separates them. The full library is its
+ * own page at /tai-lieu.
+ *
+ * Entries arrive as props (see src/pages/index.astro) rather than being read
+ * from the content collection here, so the section renders in unit tests.
  */
 import { site } from '~/content/site';
+import type { MaterialEntry } from '~/content/types';
 import MaterialCard from '~/components/astro/MaterialCard.astro';
 import ScrollReveal from '~/components/astro/ScrollReveal.astro';
 import WildFlower from '~/assets/svg/plants/WildFlower.astro';
@@ -13,6 +19,13 @@ import Sprout from '~/assets/svg/plants/Sprout.astro';
 import Tulip from '~/assets/svg/plants/Tulip.astro';
 import Daisy from '~/assets/svg/plants/Daisy.astro';
 import Lavender from '~/assets/svg/plants/Lavender.astro';
+
+interface Props {
+  /** Posts in display order. The first is featured; at most three show. */
+  entries: readonly MaterialEntry[];
+}
+
+const [featured, ...rest] = Astro.props.entries.slice(0, 3);
 ---
 
 {/* Background: see SECTION BACKGROUNDS in global.css. */}
@@ -50,23 +63,39 @@ import Lavender from '~/assets/svg/plants/Lavender.astro';
     <div class="text-center">
       <h2
         id="gieo-materials-heading"
-        class="font-display text-3xl font-semibold text-sprout-900 sm:text-4xl"
+        class="font-serif text-3xl font-medium text-sprout-900 sm:text-4xl"
       >
         {site.materials.heading}
       </h2>
-      <p class="mx-auto mt-4 max-w-2xl text-base text-ink-muted">
-        {site.materials.subtitle}
-      </p>
+      <p class="mx-auto mt-4 max-w-2xl text-base text-ink-muted">{site.materials.subtitle}</p>
     </div>
 
-    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {
-        site.materials.entries.map((entry, index) => (
-          <ScrollReveal delay={index * 0.1} class="h-full">
-            <MaterialCard entry={entry} />
+    {featured && (
+      <>
+        {/* Lead article on the left, the rest stacked beside it on wide screens. */}
+        <div class="mt-14 grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
+          <ScrollReveal class="lg:col-span-7">
+            <MaterialCard entry={featured} featured />
           </ScrollReveal>
-        ))
-      }
+          <div class="flex flex-col gap-12 lg:col-span-5">
+            {rest.map((entry, index) => (
+              <ScrollReveal delay={(index + 1) * 0.1}>
+                <MaterialCard entry={entry} />
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </>
+    )}
+
+    <div class="mt-14 text-center">
+      <a
+        href="/tai-lieu"
+        class="inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-semibold text-sprout-800 ring-1 ring-sprout-300 transition-colors hover:bg-white/70 hover:text-sprout-900"
+      >
+        {site.materials.viewAllLabel}
+        <span aria-hidden="true">→</span>
+      </a>
     </div>
   </div>
 </section>

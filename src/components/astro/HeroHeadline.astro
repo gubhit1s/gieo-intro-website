@@ -23,21 +23,19 @@ const perWordDelay = Math.min(0.06, 0.54 / Math.max(words.length, 1));
 
 <h1
   id="gieo-hero-heading"
-  class="text-balance text-3xl font-semibold leading-snug text-sprout-900 sm:text-4xl md:text-5xl lg:text-6xl"
+  class="text-balance text-3xl font-semibold leading-snug text-sprout-900 sm:text-4xl xl:text-5xl"
 >
-  {
-    words.map((word, index) => (
-      <span class="hero-word inline-block" style={`--word-delay: ${(index * perWordDelay).toFixed(3)}s`}>
-        {word}{index < words.length - 1 ? '\u00A0' : ''}
-      </span>
-    ))
-  }
+  {words.map((word, index) => (
+    <span
+      class="hero-word inline-block"
+      style={`--word-delay: ${(index * perWordDelay).toFixed(3)}s`}
+    >
+      {word}
+      {index < words.length - 1 ? '\u00A0' : ''}
+    </span>
+  ))}
 </h1>
 
-{
-  site.hero.subheadline && (
-    <p class="hero-sub mt-5 max-w-2xl text-base text-ink-muted sm:text-lg">
-      {site.hero.subheadline}
-    </p>
-  )
-}
+{site.hero.subheadline && (
+  <p class="hero-sub mt-5 max-w-2xl text-base text-ink-muted sm:text-lg">{site.hero.subheadline}</p>
+)}

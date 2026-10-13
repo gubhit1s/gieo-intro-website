@@ -21,44 +21,36 @@ const { member } = Astro.props;
 const initial = member.name.trim().split(/\s+/).at(-1)?.charAt(0) ?? 'G';
 ---
 
-<article
-  class="flex h-full flex-col rounded-2xl border border-sprout-200 bg-white p-6 shadow-sm sm:p-8"
->
+<article class="flex h-full flex-col rounded-2xl border border-sprout-200 bg-white p-6 shadow-sm sm:p-8">
   <div class="flex items-center gap-4">
-    {
-      member.portrait ? (
-        <img
-          src={member.portrait.src}
-          alt={member.portrait.alt}
-          width="64"
-          height="64"
-          class="h-16 w-16 rounded-full object-cover"
-        />
-      ) : (
-        <div
-          aria-hidden="true"
-          class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-sun-100 font-display text-2xl font-semibold text-bark-700"
-        >
-          {initial}
-        </div>
-      )
-    }
+    {member.portrait ? (
+      <img
+        src={member.portrait.src}
+        alt={member.portrait.alt}
+        width="64"
+        height="64"
+        class="h-16 w-16 rounded-full object-cover"
+      />
+    ) : (
+      <div
+        aria-hidden="true"
+        class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-sun-100 font-serif text-2xl font-semibold text-bark-700"
+      >
+        {initial}
+      </div>
+    )}
     <div class="min-w-0">
-      <h3 class="font-display text-xl font-semibold text-sprout-900 sm:text-2xl">
-        {member.name}
-      </h3>
+      <h3 class="font-serif text-xl font-semibold text-sprout-900 sm:text-2xl">{member.name}</h3>
       {member.role && <p class="mt-0.5 text-sm font-semibold text-bark-600">{member.role}</p>}
     </div>
   </div>
 
   <ul class="mt-6 flex flex-col gap-3">
-    {
-      member.achievements.map((achievement) => (
-        <li class="flex gap-3 text-sm leading-relaxed text-ink sm:text-base">
-          <Sprout size={18} class="mt-1 shrink-0 text-sprout-500" />
-          <span>{achievement.text}</span>
-        </li>
-      ))
-    }
+    {member.achievements.map((achievement) => (
+      <li class="flex gap-3 text-sm leading-relaxed text-ink sm:text-base">
+        <Sprout size={18} class="mt-1 shrink-0 text-sprout-500" />
+        <span>{achievement.text}</span>
+      </li>
+    ))}
   </ul>
 </article>

@@ -22,9 +22,6 @@ interface Props {
 const { delay = 0, class: className = '' } = Astro.props;
 ---
 
-<div
-  class:list={['reveal', className]}
-  style={delay ? `--reveal-delay: ${delay}s` : undefined}
->
+<div class:list={['reveal', className]} style={delay ? `--reveal-delay: ${delay}s` : undefined}>
   <slot />
 </div>

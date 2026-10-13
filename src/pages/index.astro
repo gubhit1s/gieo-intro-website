@@ -1,6 +1,6 @@
 ---
 /**
- * The single route.
+ * The home page. The post library has its own routes under src/pages/tai-lieu.
  *
  * Section order is fixed by FR-001: hero → team → materials → course → footer.
  * Note that this is NOT the user-story priority order (course is P3, materials
@@ -14,13 +14,16 @@ import TeamSection from '~/sections/TeamSection.astro';
 import MaterialsSection from '~/sections/MaterialsSection.astro';
 import CourseSection from '~/sections/CourseSection.astro';
 import SiteFooter from '~/sections/SiteFooter.astro';
+import { getPosts, toMaterialEntry } from '~/lib/posts';
+
+const materials = getPosts().map(toMaterialEntry);
 ---
 
 <BaseLayout>
   <SiteHeader slot="header" />
   <HeroSection />
   <TeamSection />
-  <MaterialsSection />
+  <MaterialsSection entries={materials} />
   <CourseSection />
   <SiteFooter />
 </BaseLayout>

@@ -27,20 +27,24 @@ export const site = {
     homeLabel: 'Gieo — về đầu trang',
     links: [
       { label: 'Về chúng mình', href: '#noi-dung' },
-      { label: 'Kho tài liệu', href: '#tai-lieu' },
+      // A separate page, not an in-page section: the full post library.
+      { label: 'Kho tài liệu', href: '/tai-lieu' },
       { label: 'Khóa học', href: '#khoa-hoc' },
     ],
     contact: { label: 'Liên hệ', href: '#lien-he' },
   },
 
   hero: {
-    headline: 'Chinh phục học sinh giỏi không khó như bạn nghĩ',
-    subheadline: 'Cùng Gieo gieo những hạt mầm đầu tiên trên hành trình văn chương của bạn.',
+    headline: 'Gieo một cách đọc, ươm một cách nghĩ.',
+    subheadline:
+      'Cùng Gieo đọc sâu hơn, nghĩ độc lập hơn và viết nên tiếng nói của riêng mình qua từng trang văn.',
     actions: [
       { label: 'Khám phá lộ trình HSG Văn', href: '#khoa-hoc', icon: 'compass' },
       // No workshop section exists yet; contact is the closest real target.
       { label: 'Tìm hiểu về workshop', href: '#lien-he', icon: 'workshop' },
     ],
+    // Illustration from Mixkit (free art licence: commercial use, no credit required).
+    illustrationAlt: 'Một bạn nữ ngồi đọc sách trên tấm thảm dưới tán cây mùa thu',
   },
 
   team: {
@@ -98,34 +102,15 @@ export const site = {
   materials: {
     heading: 'Những tài liệu của chúng mình',
     subtitle: 'Kho tài liệu được chúng mình biên soạn và chia sẻ miễn phí cho các bạn học sinh.',
-    // Placeholder copy in this release (FR-015). Every href is null, so each
-    // card renders as a non-interactive <article> — no dead ends.
-    entries: [
-      {
-        id: 'placeholder-1',
-        title: 'Lorem ipsum dolor sit amet',
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        href: null,
-        isPlaceholder: true,
-      },
-      {
-        id: 'placeholder-2',
-        title: 'Consectetur adipiscing elit',
-        description:
-          'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-        href: null,
-        isPlaceholder: true,
-      },
-      {
-        id: 'placeholder-3',
-        title: 'Sed do eiusmod tempor',
-        description:
-          'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-        href: null,
-        isPlaceholder: true,
-      },
-    ],
+    // The posts themselves are Markdown files in src/content/posts, not here.
+    viewAllLabel: 'Xem tất cả bài viết',
+    readLabel: 'Đọc bài',
+    library: {
+      heading: 'Kho tài liệu',
+      backLabel: 'Kho tài liệu',
+      postedByLabel: 'Đăng bởi',
+      otherPostsHeading: 'Bài viết khác',
+    },
   },
 
   course: {

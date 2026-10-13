@@ -30,6 +30,11 @@ export interface Hero {
   readonly subheadline: string | null;
   /** Two buttons under the headline: the primary path, then a secondary one. */
   readonly actions: readonly [HeroAction, HeroAction];
+  /**
+   * Alt text for the hero illustration. The image file itself is imported in
+   * HeroSection so Astro can optimise it; only the copy lives here.
+   */
+  readonly illustrationAlt: string;
 }
 
 export type HeroActionIcon = 'compass' | 'workshop';
@@ -75,27 +80,69 @@ export interface TeamSectionContent {
 export interface MaterialEntry {
   readonly id: string;
   readonly title: string;
+  /** A one- or two-sentence excerpt, shown under the title. */
   readonly description: string;
   /**
-   * `null` in every entry this release (FR-015). MaterialCard renders a
-   * non-interactive <article> when null and an <a> only for a real URL, so
-   * there is no code path that produces a link to nowhere.
+   * The post's own page. Built from the post slug by `postHref` in
+   * src/lib/posts.ts, so it always points at a page that exists.
    */
-  readonly href: string | null;
-  /**
-   * Typed as the literal `true` so the placeholder state is explicit and
-   * greppable. Removing it when real materials arrive is a type error at every
-   * call site that still assumes it — a deliberate tripwire against a
-   * half-migrated section.
-   */
-  readonly isPlaceholder: true;
+  readonly href: `/tai-lieu/${string}`;
 }
 
+/**
+ * One block of a post's body. Posts are stored as structured blocks rather
+ * than HTML or Markdown so they can come from an API later unchanged, and so
+ * the page controls all of the markup (PostBody.astro).
+ */
+export type PostBlock =
+  | { readonly type: 'heading'; readonly level: 2 | 3; readonly text: string }
+  | { readonly type: 'paragraph'; readonly text: string }
+  /** `lead` is rendered bold before the item text, e.g. an author and work. */
+  | {
+      readonly type: 'list';
+      /** Numbered (1, 2, 3…) instead of bulleted. */
+      readonly ordered?: boolean;
+      readonly items: readonly { readonly lead?: string; readonly text: string }[];
+    }
+  /** One entry per line of the quotation (poetry keeps its line breaks). */
+  | { readonly type: 'quote'; readonly lines: readonly string[]; readonly author: string }
+  /** A highlighted key takeaway; `lead` is an optional label before it, e.g. "Có thể khái quát:". */
+  | { readonly type: 'note'; readonly lead?: string; readonly text: string };
+
+export interface Post {
+  /** URL slug: the post is served at /tai-lieu/<slug>. Lowercase, a–z, 0–9, hyphens. */
+  readonly slug: string;
+  readonly title: string;
+  /** One- or two-sentence summary, shown under the title and on cards. */
+  readonly summary: string;
+  /** Shown in the byline under the title: "Đăng bởi <author> · <date>". */
+  readonly author: string;
+  /** Publication date as ISO `YYYY-MM-DD`; displayed as DD/MM/YYYY. */
+  readonly publishedAt: `${number}-${number}-${number}`;
+  readonly body: readonly PostBlock[];
+}
+
+/**
+ * Copy for the home-page materials section and the library pages. The posts
+ * themselves live in src/content/posts.ts.
+ */
 export interface MaterialsSectionContent {
   readonly heading: string;
   readonly subtitle: string;
-  /** Length >= 3 (FR-014). Asserted in tests; an array because it will grow. */
-  readonly entries: readonly MaterialEntry[];
+  /** Link from the home-page section to the full library page. */
+  readonly viewAllLabel: string;
+  /** Call to action on each card in the library grid. */
+  readonly readLabel: string;
+  readonly library: {
+    /** <h1> of the /tai-lieu page. */
+    readonly heading: string;
+    /** Back link at the top of each post page. */
+    readonly backLabel: string;
+    /** Byline prefix under a post's title, before the author's name. */
+    readonly postedByLabel: string;
+    /** Heading above the "more posts" list at the end of each post. */
+    readonly otherPostsHeading: string;
+  };
 }
 
 export interface CourseOutcome {
@@ -138,8 +185,11 @@ export interface SocialLink {
 
 export interface NavLink {
   readonly label: string;
-  /** In-page anchor; must match a section id in src/sections. */
-  readonly href: `#${string}`;
+  /**
+   * Either an in-page anchor on the home page (must match a section id in
+   * src/sections) or the path of another page, e.g. `/tai-lieu`.
+   */
+  readonly href: `#${string}` | `/${string}`;
 }
 
 export interface Navigation {
