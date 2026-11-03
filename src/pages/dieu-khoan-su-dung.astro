@@ -1,0 +1,73 @@
+---
+/**
+ * The terms of use ("Điều khoản sử dụng") — specs/002-terms-of-service.
+ *
+ * Text comes from src/content/terms.ts; section bodies render through
+ * PostBody so the page reads like a post. Headings are numbered by position
+ * because section 5 refers back to "mục 4". The contact email is never in the
+ * terms text: it comes from site.contact.email, after every section flagged
+ * `showContact`.
+ */
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import SiteHeader from '~/sections/SiteHeader.astro';
+import SiteFooter from '~/sections/SiteFooter.astro';
+import PostBody from '~/components/astro/PostBody.astro';
+import { site } from '~/content/site';
+import { terms } from '~/content/terms';
+import { formatPostDate } from '~/lib/posts';
+---
+
+<BaseLayout title={`${terms.title} — ${site.brand.name}`} description={terms.description}>
+  <SiteHeader slot="header" onHome={false} />
+
+  {/* id="noi-dung" is the skip link's target on every page (BaseLayout). */}
+  <article
+    id="noi-dung"
+    aria-labelledby="gieo-terms-title"
+    class="bg-paper pb-20 pt-10 sm:pb-28 sm:pt-14"
+  >
+    <div class="mx-auto w-full max-w-3xl px-4 md:px-8">
+      <header class="border-b border-sprout-200 pb-10">
+        <h1
+          id="gieo-terms-title"
+          class="font-serif text-4xl font-medium leading-snug text-sprout-900 sm:text-5xl"
+        >
+          {terms.title}
+        </h1>
+        <p class="mt-4 text-sm text-print-muted">
+          {site.legal.updatedLabel}{' '}
+          <time datetime={terms.updatedAt} class="font-semibold text-print">
+            {formatPostDate(terms.updatedAt)}
+          </time>
+        </p>
+        <p class="mt-6 font-serif text-lg font-[450] leading-relaxed text-print sm:text-xl">
+          {terms.intro}
+        </p>
+      </header>
+
+      {terms.sections.map((section, index) => (
+        <section aria-labelledby={section.id} class="mt-12">
+          <h2 id={section.id} class="font-body text-2xl font-semibold leading-snug text-print">
+            {`${index + 1}. ${section.heading}`}
+          </h2>
+          <div class="mt-4">
+            <PostBody blocks={section.blocks} />
+          </div>
+          {section.showContact && (
+            <p class="mt-4 font-serif text-lg font-[450] text-print">
+              {site.legal.emailLabel}{' '}
+              <a
+                href={`mailto:${site.contact.email}`}
+                class="break-all font-semibold text-sprout-700 underline underline-offset-2 hover:text-sprout-900"
+              >
+                {site.contact.email}
+              </a>
+            </p>
+          )}
+        </section>
+      ))}
+    </div>
+  </article>
+
+  <SiteFooter />
+</BaseLayout>

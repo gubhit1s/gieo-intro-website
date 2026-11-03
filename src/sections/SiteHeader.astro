@@ -1,20 +1,20 @@
 ---
 /**
- * Sticky top bar: the Gieo mark (back to top), in-page section links, and a
- * contact button that jumps to the footer.
+ * Sticky top bar: the Gieo mark (back to top), the nav links, and one filled
+ * button that jumps to the talkshow section on the home page.
  *
  * Links are plain anchors, so the jump works with no JavaScript; the smooth
  * scroll and the offset below the bar both come from global.css
  * (`scroll-behavior`, `scroll-padding-top: var(--header-h)`).
  *
- * Layout: phones get two rows — mark + contact, then the section links —
+ * Layout: phones get two rows — mark + button, then the nav links —
  * and from 640px everything sits on one row. The row heights define
  * --header-h (h-14 + h-11 = 6.25rem, then h-16 = 4rem). Change both together.
  *
  * On any page other than the home page, pass `onHome={false}`: section
- * anchors then point back at the home page (`/#noi-dung`) instead of at a
- * section that does not exist on the current page. The contact button stays
- * in-page because every page ends with the footer it jumps to.
+ * anchors — the button's included — then point back at the home page
+ * (`/#noi-dung`) instead of at a section that does not exist on the current
+ * page.
  *
  * `current` marks the nav link for the page being viewed (aria-current).
  */
@@ -76,10 +76,10 @@ const resolve = (href: string) => (!onHome && href.startsWith('#') ? `/${href}` 
     </nav>
 
     <a
-      href={site.nav.contact.href}
+      href={resolve(site.nav.cta.href)}
       class="self-center whitespace-nowrap rounded-full bg-sprout-700 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-sprout-800"
     >
-      {site.nav.contact.label}
+      {site.nav.cta.label}
     </a>
   </div>
 </header>

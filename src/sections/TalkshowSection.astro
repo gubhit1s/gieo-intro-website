@@ -1,0 +1,556 @@
+---
+/**
+ * Talkshow "Ươm mầm cùng GIEO" — the first content after the hero.
+ *
+ * Carries the #noi-dung anchor: the skip link and the hero's talkshow button
+ * both land here.
+ *
+ * Three parts:
+ *   1. The event: main poster on a taped paper card, beside the date badge,
+ *      the facts as a <dl>, and a countdown to air time.
+ *   2. The programme: GIEO → NẢY → ĐÁP drawn as seed → sprout → flower, joined
+ *      by a stem that grows across when the list scrolls into view.
+ *   3. The host and speakers: a scroll-snap strip of cards, all four visible
+ *      from 1280px; below that the strip scrolls, with arrows.
+ *
+ * Everything is static HTML. The small script at the bottom only adds things
+ * that need JavaScript anyway — the live countdown, the carousel arrows and
+ * the poster lightbox — and each is hidden or falls back to a plain link when
+ * scripting is unavailable. Entrance motion uses ScrollReveal and the
+ * `.talkshow-*` rules in global.css, so it is gated by `.js-motion` and
+ * reduced motion like everything else.
+ */
+import type { ImageMetadata } from 'astro';
+import { Image, Picture, getImage } from 'astro:assets';
+import { site } from '~/content/site';
+import ScrollReveal from '~/components/astro/ScrollReveal.astro';
+import SpeakerCard from '~/components/astro/SpeakerCard.astro';
+import TikTokIcon from '~/assets/svg/social/TikTokIcon.astro';
+import FallingSeed from '~/assets/svg/plants/FallingSeed.astro';
+import Sprout from '~/assets/svg/plants/Sprout.astro';
+import WildFlower from '~/assets/svg/plants/WildFlower.astro';
+import LeafPair from '~/assets/svg/plants/LeafPair.astro';
+import Daisy from '~/assets/svg/plants/Daisy.astro';
+import Tulip from '~/assets/svg/plants/Tulip.astro';
+
+const t = site.talkshow;
+
+const images = Object.fromEntries(
+  Object.entries(
+    import.meta.glob<ImageMetadata>('../assets/images/talkshow/*.jpg', {
+      eager: true,
+      import: 'default',
+    })
+  ).map(([path, image]) => [path.split('/').pop()!, image])
+);
+
+/** Throws on a missing file, so a new speaker without images fails the build. */
+function image(file: string): ImageMetadata {
+  const found = images[file];
+  if (!found) throw new Error(`Talkshow image "${file}" is not in src/assets/images/talkshow`);
+  return found;
+}
+
+/** Full-size poster for the lightbox (and the plain link when there is no JS). */
+async function posterHref(file: string): Promise<string> {
+  return (await getImage({ src: image(file), width: 1080, format: 'webp' })).src;
+}
+
+const mainPoster = image('poster-main.jpg');
+const mainPosterHref = await posterHref('poster-main.jpg');
+
+// Alternate the polaroid tilts so the row reads as photos laid on a table.
+const tilts = [-2.5, 2, -1.5, 2.5];
+const speakers = t.speakers.map((speaker, index) => ({
+  speaker,
+  portrait: image(`portrait-${speaker.id}.jpg`),
+  tilt: tilts[index % tilts.length]!,
+}));
+
+const tiktok = site.social.find((link) => link.platform === 'tiktok')!;
+const agendaIcons = { gieo: FallingSeed, nay: Sprout, dap: WildFlower } as const;
+---
+
+{/* Background: see SECTION BACKGROUNDS in global.css. */}
+<section
+  id="noi-dung"
+  aria-labelledby="gieo-talkshow-heading"
+  class="relative overflow-hidden bg-gradient-to-b from-sprout-50 to-sun-50 py-20 sm:py-28"
+>
+  {/* Plants sit in the side gutters, which are only wide enough from 1280px. */}
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
+    <LeafPair
+      size={88}
+      class="anim-drift anim-delay-1 absolute -right-4 top-10 hidden text-sprout-200 opacity-70 md:block"
+    />
+    <WildFlower
+      size={35}
+      class="anim-sway anim-delay-2 absolute left-5 top-[38%] hidden text-sprout-400 xl:block"
+    />
+    <Daisy size={27} class="anim-sway absolute left-14 top-[44%] hidden text-sprout-400 xl:block" />
+    <Tulip
+      size={30}
+      class="anim-sway anim-delay-1 absolute right-6 top-[62%] hidden text-sprout-400 xl:block"
+    />
+  </div>
+
+  <div class="section-shell relative z-10">
+    {/* ── Heading ─────────────────────────────────────────────── */}
+    <div class="flex flex-col items-center text-center">
+      <p class="inline-flex items-center gap-2 rounded-full bg-sprout-700 px-4 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-white">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="16"
+          height="16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <rect x="9" y="2" width="6" height="12" rx="3" />
+          <path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4" />
+        </svg>
+        {t.eyebrow}
+      </p>
+      <h2
+        id="gieo-talkshow-heading"
+        class="mt-5 font-display text-4xl font-bold text-sprout-800 sm:text-5xl"
+      >
+        {t.heading}
+      </h2>
+      <p class="mt-3 max-w-2xl font-serif text-lg italic text-sprout-700 sm:text-xl">{t.topic}</p>
+    </div>
+
+    {/* ── The event ───────────────────────────────────────────── */}
+    <div class="mt-12 grid items-center gap-12 lg:mt-16 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-14">
+      <ScrollReveal class="mx-auto w-full max-w-md">
+        <a
+          href={mainPosterHref}
+          data-lightbox
+          data-alt={t.posterAlt}
+          class="talkshow-poster relative block rounded-2xl bg-white p-3 shadow-xl shadow-sprout-900/15"
+        >
+          {/* Two strips of tape holding the poster to the page. */}
+          <span
+            aria-hidden="true"
+            class="absolute -top-3 left-6 z-10 h-7 w-24 -rotate-6 bg-sun-200/80 shadow-sm"
+          ></span>
+          <span
+            aria-hidden="true"
+            class="absolute -top-3 right-6 z-10 h-7 w-24 rotate-6 bg-sun-200/80 shadow-sm"
+          ></span>
+          <Picture
+            src={mainPoster}
+            alt={t.posterAlt}
+            formats={['avif', 'webp']}
+            widths={[400, 800]}
+            sizes="(min-width: 1024px) 28rem, (min-width: 448px) 28rem, 100vw"
+            loading="lazy"
+            class="h-auto w-full rounded-xl"
+          />
+        </a>
+      </ScrollReveal>
+
+      <ScrollReveal delay={0.12}>
+        <p class="text-base leading-relaxed text-ink sm:text-lg">{t.intro}</p>
+
+        {/* Date badge, echoing the poster's circled "07". */}
+        <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+          <time datetime={t.date.startsAt} class="flex items-center gap-4">
+            <span class="relative inline-flex h-20 w-24 shrink-0 items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 80"
+                aria-hidden="true"
+                focusable="false"
+                class="absolute inset-0 h-full w-full overflow-visible text-sprout-500"
+              >
+                <path
+                  class="talkshow-circle"
+                  pathLength="1"
+                  d="M62 8C34 2 6 16 6 40s26 36 50 34 40-14 38-36C92 18 70 6 46 10"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3.5"
+                  stroke-linecap="round"
+                ></path>
+              </svg>
+              <span class="relative font-display text-5xl font-bold text-sprout-800">
+                {t.date.day}
+              </span>
+            </span>
+            <span class="flex flex-col leading-tight">
+              <span class="font-display text-2xl font-bold text-sprout-800">{t.date.month}</span>
+              <span class="text-base font-semibold text-ink">{t.date.weekday}</span>
+              <span class="text-base font-semibold text-sprout-700">{t.date.time}</span>
+            </span>
+          </time>
+          <span class="talkshow-sticker inline-flex h-20 w-20 -rotate-12 items-center justify-center rounded-full bg-sun-300 p-2 text-center text-sm font-bold uppercase leading-tight text-bark-800 shadow-md ring-4 ring-sun-100">
+            {t.freeBadge}
+          </span>
+        </div>
+
+        <dl class="mt-8 grid gap-x-6 gap-y-3 sm:grid-cols-[auto_1fr]">
+          {t.details.map((detail) => (
+            <div class="contents">
+              <dt class="text-sm font-semibold uppercase tracking-wide text-sprout-700 sm:pt-0.5">
+                {detail.label}
+              </dt>
+              <dd class="-mt-2 text-base text-ink sm:mt-0">{detail.value}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <p class="mt-6 flex items-start gap-3 rounded-2xl bg-sun-100 px-4 py-3 text-sm font-semibold text-bark-800 sm:text-base">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+            class="mt-0.5 shrink-0 text-sun-600"
+          >
+            {/* Gift box. */}
+            <rect x="3" y="8" width="18" height="4" rx="1" />
+            <path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7" />
+            <path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5" />
+          </svg>
+          {t.minigame}
+        </p>
+
+        {/* Countdown. Hidden until the script has filled it in, so a visitor
+            without JavaScript never sees empty tiles; the date above already
+            says when. */}
+        <div data-countdown data-starts={t.date.startsAt} data-ends={t.date.endsAt} class="mt-8">
+          <div data-countdown-timer hidden>
+            <p id="gieo-talkshow-countdown" class="text-sm font-semibold text-sprout-700">
+              {t.countdown.label}
+            </p>
+            <div
+              role="timer"
+              aria-labelledby="gieo-talkshow-countdown"
+              class="mt-2 flex gap-2 sm:gap-3"
+            >
+              {t.countdown.units.map((unit) => (
+                <span class="flex w-16 flex-col items-center rounded-2xl bg-white py-2 shadow-sm ring-1 ring-sprout-200 sm:w-[4.5rem]">
+                  <span
+                    data-countdown-value
+                    class="font-display text-2xl font-bold tabular-nums text-sprout-800 sm:text-3xl"
+                  >
+                    00
+                  </span>
+                  <span class="text-xs font-semibold text-ink-muted">{unit}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+          <p data-countdown-live hidden class="font-semibold text-sprout-800">
+            {t.countdown.live}
+          </p>
+          <p data-countdown-ended hidden class="font-semibold text-sprout-800">
+            {t.countdown.ended}
+          </p>
+        </div>
+
+        <a
+          href={tiktok.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="mt-8 inline-flex items-center gap-2.5 rounded-full bg-sprout-700 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-sprout-800 motion-safe:hover:-translate-y-0.5"
+        >
+          <TikTokIcon size={20} />
+          {t.watchLabel}
+        </a>
+      </ScrollReveal>
+    </div>
+
+    {/* ── The programme ───────────────────────────────────────── */}
+    <div class="mt-20 sm:mt-24">
+      <ScrollReveal class="relative">
+        {/* The stem joining seed → sprout → flower. Horizontal from 768px,
+            vertical down the icon column below that. */}
+        <span
+          aria-hidden="true"
+          class="talkshow-stem absolute left-[2.25rem] top-9 bottom-9 w-1 rounded-full bg-sprout-300 md:left-[16.66%] md:right-[16.66%] md:top-9 md:bottom-auto md:h-1 md:w-auto"
+        ></span>
+        <ol class="relative grid gap-8 md:grid-cols-3 md:gap-6">
+          {t.agenda.map((part, index) => {
+            const Icon = agendaIcons[part.id];
+            return (
+              <li
+                class="talkshow-stagger flex gap-5 md:flex-col md:items-center md:text-center"
+                style={`--i: ${index}`}
+              >
+                <span class="relative z-10 flex h-[4.5rem] w-[4.5rem] shrink-0 items-center justify-center rounded-full bg-white shadow-md ring-4 ring-sprout-100">
+                  <Icon size={part.id === 'dap' ? 20 : 36} class="text-sprout-600" />
+                </span>
+                <div class="pt-1 md:pt-0">
+                  <p class="text-sm font-semibold text-bark-600">{`0${index + 1}`}</p>
+                  {/* Roomy line-height and a gap above: the stacked capitals
+                      in NẢY and ĐÁP otherwise touch the number. */}
+                  <p class="mt-1.5 font-display text-3xl font-bold leading-[1.5] text-sprout-800">
+                    {part.name}
+                  </p>
+                  <p class="mt-2 max-w-xs leading-relaxed text-ink md:mx-auto">{part.text}</p>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </ScrollReveal>
+
+      <ScrollReveal>
+        <blockquote class="mx-auto mt-14 max-w-2xl text-center font-serif text-lg italic leading-relaxed text-sprout-800 sm:text-xl">
+          {t.closingQuote}
+        </blockquote>
+      </ScrollReveal>
+    </div>
+  </div>
+
+  {/* ── Host and speakers ─────────────────────────────────────
+      Wider than section-shell so all four cards fit side by side from
+      1280px. Below that the strip scrolls. */}
+  <div class="relative z-10 mx-auto mt-24 w-full max-w-[92rem] px-4 sm:mt-28 md:px-8">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <h3 class="font-serif text-2xl font-medium text-sprout-900 sm:text-3xl">
+        {t.speakersHeading}
+      </h3>
+      {/* The controls need the script, so they stay hidden without it; the
+          strip still scrolls natively. */}
+      <div data-carousel-controls hidden class="flex gap-2">
+        <button
+          type="button"
+          data-carousel-prev
+          aria-label={t.carousel.previous}
+          class="flex h-11 w-11 items-center justify-center rounded-full bg-white text-sprout-800 shadow-sm ring-1 ring-sprout-200 transition hover:bg-sprout-100"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          data-carousel-next
+          aria-label={t.carousel.next}
+          class="flex h-11 w-11 items-center justify-center rounded-full bg-sprout-700 text-white shadow-sm transition hover:bg-sprout-800"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <ScrollReveal>
+      {/* Vertical padding inside the scroller keeps the card shadows, the
+          tilted frames from being clipped. */}
+      <ul
+        data-carousel-track
+        tabindex="0"
+        aria-label={t.carousel.label}
+        class="talkshow-track -mx-4 mt-4 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-px-4 px-4 pb-6 pt-5 md:-mx-2 md:scroll-px-2 md:px-2"
+      >
+        {speakers.map(({ speaker, portrait, tilt }, index) => (
+          <li
+            class="talkshow-sprout w-[85%] shrink-0 snap-start sm:w-[60%] md:w-[calc(50%-0.75rem)] lg:w-[calc((100%-3rem)/3)] xl:w-[calc((100%-4.5rem)/4)]"
+            style={`--i: ${index}`}
+          >
+            <SpeakerCard speaker={speaker} portrait={portrait} tilt={tilt} />
+          </li>
+        ))}
+      </ul>
+    </ScrollReveal>
+
+    {/* Position dots. Decorative: the arrows and the strip are the controls. */}
+    <div data-carousel-dots aria-hidden="true" hidden class="mt-1 flex justify-center gap-2">
+      {speakers.map(() => (
+        <span class="h-2 w-2 rounded-full bg-sprout-300 transition-all"></span>
+      ))}
+    </div>
+  </div>
+
+  {/* Poster lightbox for the main poster. */}
+  <dialog
+    data-lightbox-dialog
+    aria-label={t.posterLabel}
+    class="talkshow-lightbox m-auto max-h-[92svh] w-[min(92vw,34rem)] overflow-visible rounded-2xl bg-transparent p-0 backdrop:bg-sprout-900/70"
+  >
+    <form method="dialog" class="absolute -right-2 -top-2 z-10 sm:-right-4 sm:-top-4">
+      <button
+        type="submit"
+        aria-label={t.closeLabel}
+        class="flex h-11 w-11 items-center justify-center rounded-full bg-white text-sprout-900 shadow-lg"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M18 6 6 18M6 6l12 12" />
+        </svg>
+      </button>
+    </form>
+    {/* The script swaps src and alt per link. Lazy, so nothing downloads
+        while the dialog is closed. Same 1080px WebP as the link's href.
+
+        <Image>, not a plain <img>: in `astro dev` the toolbar's audit
+        downloads every plain <img> to check its size, and it re-runs on every
+        DOM change — the countdown ticks each second, so a plain <img> here
+        was re-fetched once a second. <Image> is exempt from that check. */}
+    <Image
+      data-lightbox-image
+      src={mainPoster}
+      width={1080}
+      format="webp"
+      alt={t.posterAlt}
+      loading="lazy"
+      class="h-auto max-h-[92svh] w-full rounded-2xl object-contain shadow-2xl"
+    />
+  </dialog>
+</section>
+
+<script>
+  const section = document.getElementById('noi-dung');
+
+  // ── Countdown ──────────────────────────────────────────────
+  const countdown = section?.querySelector<HTMLElement>('[data-countdown]');
+  if (countdown) {
+    const starts = Date.parse(countdown.dataset.starts ?? '');
+    const ends = Date.parse(countdown.dataset.ends ?? '');
+    const timer = countdown.querySelector<HTMLElement>('[data-countdown-timer]')!;
+    const live = countdown.querySelector<HTMLElement>('[data-countdown-live]')!;
+    const ended = countdown.querySelector<HTMLElement>('[data-countdown-ended]')!;
+    const values = countdown.querySelectorAll<HTMLElement>('[data-countdown-value]');
+
+    const tick = () => {
+      const now = Date.now();
+      timer.hidden = now >= starts;
+      live.hidden = !(now >= starts && now < ends);
+      ended.hidden = now < ends;
+      if (now >= ends) {
+        window.clearInterval(interval);
+        return;
+      }
+      if (now >= starts) return;
+
+      const total = Math.floor((starts - now) / 1000);
+      const parts = [
+        Math.floor(total / 86400),
+        Math.floor((total % 86400) / 3600),
+        Math.floor((total % 3600) / 60),
+        total % 60,
+      ];
+      parts.forEach((part, i) => {
+        const node = values[i];
+        if (node) node.textContent = String(part).padStart(2, '0');
+      });
+    };
+
+    const interval = window.setInterval(tick, 1000);
+    tick();
+  }
+
+  // ── Speaker carousel: arrows and dots ──────────────────────
+  //
+  // Only needed where the strip overflows (below 1280px all four cards don't
+  // fit). The arrows scroll one card at a time and disable at either end; the
+  // dots show the position. Where everything fits, both stay hidden.
+  const track = section?.querySelector<HTMLElement>('[data-carousel-track]');
+  const controls = section?.querySelector<HTMLElement>('[data-carousel-controls]');
+  const dotsRow = section?.querySelector<HTMLElement>('[data-carousel-dots]');
+  if (track && controls && dotsRow) {
+    const prev = controls.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
+    const next = controls.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
+    const dots = Array.from(dotsRow.children) as HTMLElement[];
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    // One step is one card plus the gap between cards.
+    const step = () => {
+      const first = track.children[0] as HTMLElement | undefined;
+      const second = track.children[1] as HTMLElement | undefined;
+      return first && second ? second.offsetLeft - first.offsetLeft : track.clientWidth;
+    };
+
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      const scrollable = max > 4;
+      controls.hidden = !scrollable;
+      dotsRow.hidden = !scrollable;
+      prev.disabled = track.scrollLeft <= 4;
+      next.disabled = track.scrollLeft >= max - 4;
+      const active = next.disabled ? dots.length - 1 : Math.round(track.scrollLeft / step());
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('w-6', i === active);
+        dot.classList.toggle('bg-sprout-600', i === active);
+      });
+    };
+
+    const go = (direction: 1 | -1) =>
+      track.scrollBy({ left: direction * step(), behavior: reduced.matches ? 'auto' : 'smooth' });
+
+    prev.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+    track.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
+
+  // ── Poster lightbox ────────────────────────────────────────
+  const dialog = section?.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
+  const lightboxImage = dialog?.querySelector<HTMLImageElement>('[data-lightbox-image]');
+  if (dialog && lightboxImage && typeof dialog.showModal === 'function') {
+    section!.querySelectorAll<HTMLAnchorElement>('a[data-lightbox]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        lightboxImage.src = link.href;
+        lightboxImage.alt = link.dataset.alt ?? '';
+        dialog.setAttribute('aria-label', link.dataset.alt ?? '');
+        dialog.showModal();
+      });
+    });
+    // A click on the backdrop lands on the dialog element itself.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  }
+</script>

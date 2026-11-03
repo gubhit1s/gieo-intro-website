@@ -1,8 +1,11 @@
 ---
 /**
- * One post. The body blocks render through PostBody (styled by `.post-body`
- * in global.css); up to two other posts follow it.
+ * One post. The cover sits between the header and the body; the body blocks
+ * render through PostBody (styled by `.post-body` in global.css), followed by
+ * a short copyright notice linking to the terms; up to two other posts
+ * follow it.
  */
+import { Picture } from 'astro:assets';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import SiteHeader from '~/sections/SiteHeader.astro';
 import SiteFooter from '~/sections/SiteFooter.astro';
@@ -17,7 +20,7 @@ import WildFlower from '~/assets/svg/plants/WildFlower.astro';
 import Lavender from '~/assets/svg/plants/Lavender.astro';
 import { site } from '~/content/site';
 import type { MaterialEntry, Post } from '~/content/types';
-import { formatPostDate, getPosts, toMaterialEntry } from '~/lib/posts';
+import { formatPostDate, getPosts, resolveCover, toMaterialEntry } from '~/lib/posts';
 
 export function getStaticPaths() {
   const posts = getPosts();
@@ -39,6 +42,7 @@ interface Props {
 }
 
 const { post, others } = Astro.props;
+const cover = resolveCover(post);
 ---
 
 <BaseLayout title={`${post.title} — ${site.brand.name}`} description={post.summary}>
@@ -139,14 +143,35 @@ const { post, others } = Astro.props;
           </span>
           <time datetime={post.publishedAt}>{formatPostDate(post.publishedAt)}</time>
         </p>
-        <p class="mt-2 font-serif text-lg font-semibold italic leading-relaxed text-bark-600 sm:text-xl">
+        <p class="mt-5 border-l-[3px] border-sky-300 pl-4 font-body text-lg leading-relaxed text-sky-700 sm:text-xl">
           {post.summary}
         </p>
       </header>
 
+      <Picture
+        src={cover.image}
+        alt={cover.alt}
+        formats={['avif', 'webp']}
+        widths={[480, 800, 1200, 1600]}
+        sizes="(min-width: 768px) 44rem, 100vw"
+        class="mt-10 aspect-video w-full rounded-3xl object-cover shadow-lg shadow-sprout-900/10"
+      />
+
       <div class="mt-10">
         <PostBody blocks={post.body} />
       </div>
+
+      {/* Copyright reminder where readers copy from (002 FR-013). Outside
+          .post-body so it does not read as part of the article. */}
+      <aside class="post-legal mt-12 rounded-2xl border border-sprout-200 bg-sprout-50/60 px-5 py-4 text-sm leading-relaxed text-print-muted">
+        {site.legal.postNotice}{' '}
+        <a
+          href={site.legal.termsHref}
+          class="font-semibold text-sprout-700 underline underline-offset-2 hover:text-sprout-900"
+        >
+          {site.legal.termsLabel}
+        </a>
+      </aside>
     </div>
   </article>
 

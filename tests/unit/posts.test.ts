@@ -3,7 +3,7 @@ import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, it } from 'vitest';
 import PostBody from '~/components/astro/PostBody.astro';
 import { posts } from '~/content/posts';
-import { formatPostDate, postHref, toMaterialEntry } from '~/lib/posts';
+import { formatPostDate, postHref, resolveCover, toMaterialEntry } from '~/lib/posts';
 
 /** The hardcoded post library (src/content/posts.ts). */
 describe('posts', () => {
@@ -35,6 +35,13 @@ describe('posts', () => {
     }
   });
 
+  it('gives every post a cover that exists and has alt text', () => {
+    for (const post of posts) {
+      expect(post.cover.alt.trim()).not.toBe('');
+      expect(() => resolveCover(post)).not.toThrow();
+    }
+  });
+
   it('formats the publication date as DD/MM/YYYY', () => {
     expect(formatPostDate('2026-10-13')).toBe('13/10/2026');
   });
@@ -46,6 +53,7 @@ describe('posts', () => {
       title: first!.title,
       description: first!.summary,
       href: postHref(first!.slug),
+      cover: resolveCover(first!),
     });
     expect(postHref('abc')).toBe('/tai-lieu/abc');
   });

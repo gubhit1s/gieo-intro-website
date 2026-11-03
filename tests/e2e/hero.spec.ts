@@ -72,13 +72,13 @@ test.describe('hero — first impression', () => {
       ).toBeInViewport();
     }
 
-    const [roadmap] = site.hero.actions;
-    await page.locator('#gioi-thieu').getByRole('link', { name: roadmap.label }).click();
+    const [materials] = site.hero.actions;
+    await page.locator('#gioi-thieu').getByRole('link', { name: materials.label }).click();
     await page.waitForTimeout(800);
 
     // Scrolling is not blocked or hijacked — we actually moved down the page.
     expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
-    await expect(page.getByText(site.course.heading, { exact: true })).toBeInViewport();
+    await expect(page.getByRole('heading', { name: site.materials.heading, exact: true })).toBeInViewport();
   });
 
   test('scrolling from the hero is not intercepted (US1 scenario 4)', async ({ page }) => {

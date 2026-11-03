@@ -15,7 +15,17 @@ test.describe('accessibility', () => {
     // Scanning mid-fade makes axe compute contrast against a partially
     // transparent element and report a failure that does not exist once the
     // transition settles — a test-timing artifact, not a real defect.
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    // Bring each reveal into view in turn and wait for its observer to fire.
+    // Scrolling past on a timer is not enough: under load, Firefox and WebKit
+    // deliver the callbacks late and sections get skipped, never revealed.
+    await page.evaluate(async () => {
+      for (const el of Array.from(document.querySelectorAll('.reveal'))) {
+        el.scrollIntoView({ block: 'center', behavior: 'instant' });
+        for (let i = 0; i < 50 && !el.classList.contains('is-visible'); i += 1) {
+          await new Promise((resolve) => setTimeout(resolve, 20));
+        }
+      }
+    });
     await page.waitForFunction(
       () =>
         Array.from(document.querySelectorAll('.reveal')).every(
@@ -75,7 +85,7 @@ test.describe('accessibility', () => {
   test('every section is a labelled landmark (FR-001, FR-031)', async ({ page }) => {
     await page.goto('/');
 
-    for (const id of ['gioi-thieu', 'noi-dung', 'tai-lieu', 'khoa-hoc']) {
+    for (const id of ['gioi-thieu', 'noi-dung', 'tai-lieu']) {
       await expect(page.locator(`#${id}`)).toHaveAttribute('aria-labelledby', /.+/);
     }
   });
@@ -83,8 +93,13 @@ test.describe('accessibility', () => {
   test('every interactive element is reachable by keyboard (FR-031)', async ({ page }) => {
     await page.goto('/');
 
+    // Left out by design: controls inside a closed <dialog> (the poster
+    // lightbox) until it opens, and inside a [hidden] container (the carousel
+    // arrows, hidden where every card already fits).
+    const reachable =
+      ':is(a[href], button:not([disabled])):not(dialog:not([open]) *):not([hidden] *)';
     const interactive = await page
-      .locator('a[href], button:not([disabled])')
+      .locator(reachable)
       .evaluateAll((nodes) => nodes.map((n) => (n.textContent ?? '').trim().slice(0, 40)));
     expect(interactive.length).toBeGreaterThan(0);
 
@@ -92,21 +107,19 @@ test.describe('accessibility', () => {
     // through the DOM's own tab order instead of synthetic Tab presses — the
     // requirement is that each element is focusable and shows a focus ring,
     // not that a specific browser's default Tab policy includes it.
-    const focusResults = await page
-      .locator('a[href], button:not([disabled])')
-      .evaluateAll((nodes) =>
-        nodes.map((node) => {
-          (node as HTMLElement).focus();
-          const focused = document.activeElement === node;
-          const style = getComputedStyle(node);
-          return {
-            label: (node.textContent ?? '').trim().slice(0, 40),
-            focused,
-            tabIndex: (node as HTMLElement).tabIndex,
-            hidden: style.display === 'none' || style.visibility === 'hidden',
-          };
-        })
-      );
+    const focusResults = await page.locator(reachable).evaluateAll((nodes) =>
+      nodes.map((node) => {
+        (node as HTMLElement).focus();
+        const focused = document.activeElement === node;
+        const style = getComputedStyle(node);
+        return {
+          label: (node.textContent ?? '').trim().slice(0, 40),
+          focused,
+          tabIndex: (node as HTMLElement).tabIndex,
+          hidden: style.display === 'none' || style.visibility === 'hidden',
+        };
+      })
+    );
 
     const unfocusable = focusResults.filter((r) => !r.focused || r.tabIndex < 0 || r.hidden);
     expect(unfocusable).toEqual([]);

@@ -5,9 +5,7 @@
  * see specs/001-gieo-landing-site/contracts/content-schema.md. Where a rule can
  * be a compile error instead of a test failure, it is one.
  */
-
-/** Decorative plant marks available to content. Purely ornamental (FR-027). */
-export type PlantIconName = 'sprout' | 'leaf-pair' | 'grass-tuft' | 'falling-seed';
+import type { ImageMetadata } from 'astro';
 
 /**
  * A content image. `alt` is required, not optional: a content image without
@@ -37,7 +35,7 @@ export interface Hero {
   readonly illustrationAlt: string;
 }
 
-export type HeroActionIcon = 'compass' | 'workshop';
+export type HeroActionIcon = 'book' | 'talkshow';
 
 export interface HeroAction {
   readonly label: string;
@@ -46,35 +44,86 @@ export interface HeroAction {
   readonly icon: HeroActionIcon;
 }
 
-/** The competition level a credential was won at, for optional grouping. */
-export type AchievementLevel = 'quoc-gia' | 'tinh' | 'khac';
-
-export interface Achievement {
-  /** Displayed verbatim, full Vietnamese diacritics (FR-010, FR-011, FR-012). */
-  readonly text: string;
-  readonly year: string | null;
-  readonly level: AchievementLevel | null;
-}
-
-export interface TeamMember {
+/** One labelled fact about the talkshow, e.g. "Hình thức: Livestream…". */
+export interface TalkshowDetail {
   readonly id: string;
-  readonly name: string;
-  readonly role: string | null;
-  /**
-   * `null` in this release — cards render an initial-based placeholder.
-   * Nullable so real portraits drop in without the card being redesigned.
-   */
-  readonly portrait: ImageRef | null;
-  readonly achievements: readonly Achievement[];
+  readonly label: string;
+  readonly value: string;
 }
 
-export interface TeamSectionContent {
+/** One of the three parts of the programme (GIEO → NẢY → ĐÁP). */
+export interface TalkshowAgendaItem {
+  readonly id: 'gieo' | 'nay' | 'dap';
+  /** The part's one-word name, shown large. */
+  readonly name: string;
+  readonly text: string;
+}
+
+/**
+ * The host or a guest speaker. Their portrait is the file
+ * src/assets/images/talkshow/portrait-<id>.jpg, cropped from their poster;
+ * TalkshowSection resolves it, so only the alt text lives here.
+ */
+export interface TalkshowSpeaker {
+  /** Lowercase a–z and hyphens; also names the portrait file. */
+  readonly id: string;
+  /** The name as the posters print it. */
+  readonly name: string;
+  readonly role: string;
+  /** Their strongest credential, shown as a badge on the card. */
+  readonly highlight: string;
+  readonly portraitAlt: string;
+  /** Copied from the speaker's poster. Displayed verbatim and in full. */
+  readonly achievements: readonly string[];
+}
+
+export interface TalkshowSectionContent {
+  /** Small label above the heading. */
+  readonly eyebrow: string;
+  /** The event's name. */
   readonly heading: string;
-  /**
-   * A fixed-length tuple, not an array. This makes FR-008's "exactly two
-   * members" a compile error rather than a test failure.
-   */
-  readonly members: readonly [TeamMember, TeamMember];
+  readonly topic: string;
+  readonly intro: string;
+  readonly posterAlt: string;
+  /** Accessible name of the lightbox that shows the poster at full size. */
+  readonly posterLabel: string;
+  readonly date: {
+    readonly day: string;
+    readonly month: string;
+    readonly weekday: string;
+    readonly time: string;
+    /** ISO 8601 with offset; drives <time datetime> and the countdown. */
+    readonly startsAt: string;
+    readonly endsAt: string;
+  };
+  readonly details: readonly TalkshowDetail[];
+  /** Sticker beside the date badge. */
+  readonly freeBadge: string;
+  readonly minigame: string;
+  readonly countdown: {
+    readonly label: string;
+    /** Days, hours, minutes, seconds — in that order. */
+    readonly units: readonly [string, string, string, string];
+    /** Replaces the countdown between startsAt and endsAt. */
+    readonly live: string;
+    /** Replaces the countdown after endsAt. */
+    readonly ended: string;
+  };
+  /** Label of the link to Gieo's TikTok, where the livestream runs. The URL comes from `social`. */
+  readonly watchLabel: string;
+  readonly agenda: readonly [TalkshowAgendaItem, TalkshowAgendaItem, TalkshowAgendaItem];
+  readonly closingQuote: string;
+  readonly speakersHeading: string;
+  readonly carousel: {
+    /** Accessible name of the scrollable card strip. */
+    readonly label: string;
+    readonly previous: string;
+    readonly next: string;
+  };
+  /** Close button of the poster lightbox. */
+  readonly closeLabel: string;
+  /** Host first, then the guest speakers. */
+  readonly speakers: readonly TalkshowSpeaker[];
 }
 
 export interface MaterialEntry {
@@ -87,6 +136,29 @@ export interface MaterialEntry {
    * src/lib/posts.ts, so it always points at a page that exists.
    */
   readonly href: `/tai-lieu/${string}`;
+  /**
+   * The post's cover, resolved by `toMaterialEntry`. Cards show it above the
+   * title with an empty alt, since the title already names the link.
+   */
+  readonly cover?: ResolvedPostCover;
+}
+
+/**
+ * A post's cover illustration as stored in posts.ts: a file name in
+ * src/assets/images/posts plus its alt text. Plain strings, so the data could
+ * come from an API later; src/lib/posts.ts turns the file name into an
+ * optimisable image. `alt` is required for the same reason as on ImageRef.
+ */
+export interface PostCover {
+  /** File name only, e.g. `dan-chung-nlxh.png`. */
+  readonly file: string;
+  readonly alt: string;
+}
+
+/** A PostCover after src/lib/posts.ts has resolved the file for astro:assets. */
+export interface ResolvedPostCover {
+  readonly image: ImageMetadata;
+  readonly alt: string;
 }
 
 /**
@@ -119,6 +191,8 @@ export interface Post {
   readonly author: string;
   /** Publication date as ISO `YYYY-MM-DD`; displayed as DD/MM/YYYY. */
   readonly publishedAt: `${number}-${number}-${number}`;
+  /** Illustration shown on the post page and on every card linking to it. */
+  readonly cover: PostCover;
   readonly body: readonly PostBlock[];
 }
 
@@ -143,32 +217,6 @@ export interface MaterialsSectionContent {
     /** Heading above the "more posts" list at the end of each post. */
     readonly otherPostsHeading: string;
   };
-}
-
-export interface CourseOutcome {
-  readonly id: string;
-  /** One scannable phrase stating a concrete student gain (FR-018, FR-019). */
-  readonly text: string;
-  readonly icon: PlantIconName | null;
-}
-
-export interface CallToAction {
-  readonly label: string;
-  /**
-   * `null` in this release (FR-034). The button is inert by data, not by
-   * commented-out code: CallToActionButton renders an enabled
-   * <button type="button"> with a no-op handler when this is null, and an
-   * <a href> when it becomes a URL (FR-036).
-   */
-  readonly destination: string | null;
-}
-
-export interface CourseSectionContent {
-  readonly heading: string;
-  readonly description: string;
-  /** Length >= 4, including the four named in FR-018. */
-  readonly outcomes: readonly CourseOutcome[];
-  readonly cta: CallToAction;
 }
 
 export type SocialPlatform = 'facebook' | 'tiktok';
@@ -200,16 +248,66 @@ export interface Navigation {
   /** Section links, in page order. */
   readonly links: readonly NavLink[];
   /** Shown apart from `links` as the header's one filled button. */
-  readonly contact: NavLink;
+  readonly cta: NavLink;
+}
+
+/** Site-wide contact point (specs/002-terms-of-service). */
+export interface ContactInfo {
+  /** The only place the email address is written (FR-006, SC-006). */
+  readonly email: string;
+}
+
+/** Strings for the terms page and the links to it from the footer and posts. */
+export interface LegalContent {
+  /** Text of the footer link and the post-notice link. */
+  readonly termsLabel: string;
+  /** Path of the terms page; must match its file in src/pages. */
+  readonly termsHref: `/${string}`;
+  /** One or two sentences shown after every post body (FR-013). */
+  readonly postNotice: string;
+  /** Label before the mailto link on the terms page. */
+  readonly emailLabel: string;
+  /** Label before the last-updated date on the terms page. */
+  readonly updatedLabel: string;
+}
+
+export interface TermsSection {
+  /** Lowercase a–z, 0–9 and hyphens; unique. Becomes the heading's `id`. */
+  readonly id: string;
+  /**
+   * Stored without a number. The page renders it as `<h2>` prefixed with its
+   * position ("1. …").
+   */
+  readonly heading: string;
+  /**
+   * Only `paragraph` and `list` blocks — no `heading` blocks, which would
+   * break the page's h1 → h2 outline.
+   */
+  readonly blocks: readonly PostBlock[];
+  /** The page renders the mailto line from `site.contact.email` after the blocks. */
+  readonly showContact?: true;
+}
+
+/** The "Điều khoản sử dụng" document (src/content/terms.ts). */
+export interface TermsOfUse {
+  /** The page's single `<h1>`. */
+  readonly title: string;
+  /** Meta description (FR-008). */
+  readonly description: string;
+  /** ISO `YYYY-MM-DD`. Displayed as `DD/MM/YYYY`. Update it whenever the text changes. */
+  readonly updatedAt: `${number}-${number}-${number}`;
+  readonly intro: string;
+  readonly sections: readonly TermsSection[];
 }
 
 export interface SiteContent {
   readonly brand: Brand;
   readonly nav: Navigation;
   readonly hero: Hero;
-  readonly team: TeamSectionContent;
+  readonly talkshow: TalkshowSectionContent;
   readonly materials: MaterialsSectionContent;
-  readonly course: CourseSectionContent;
+  readonly contact: ContactInfo;
+  readonly legal: LegalContent;
   /** Exactly two links this release: Facebook and TikTok (FR-021). */
   readonly social: readonly [SocialLink, SocialLink];
 }

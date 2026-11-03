@@ -20,11 +20,19 @@ test.describe('static HTML carries all content', () => {
     expect(html).toContain(site.hero.headline);
     expect(html).toContain(site.brand.name);
 
-    // Team — names and all six achievements
-    for (const member of site.team.members) {
-      expect(html).toContain(member.name);
-      for (const achievement of member.achievements) {
-        expect(html).toContain(achievement.text);
+    // Talkshow — the event facts, then every speaker and achievement
+    expect(html).toContain(site.talkshow.heading);
+    expect(html).toContain(site.talkshow.date.time);
+    for (const detail of site.talkshow.details) {
+      expect(html).toContain(detail.value);
+    }
+    for (const part of site.talkshow.agenda) {
+      expect(html).toContain(part.text);
+    }
+    for (const speaker of site.talkshow.speakers) {
+      expect(html).toContain(speaker.name);
+      for (const achievement of speaker.achievements) {
+        expect(html).toContain(achievement.replaceAll('&', '&amp;'));
       }
     }
 
@@ -32,14 +40,6 @@ test.describe('static HTML carries all content', () => {
     expect(html).toContain(site.materials.heading);
     expect(html).toContain(site.materials.subtitle);
     expect(html).toContain(site.materials.viewAllLabel);
-
-    // Course — description, every outcome, and the CTA label
-    expect(html).toContain(site.course.heading);
-    expect(html).toContain(site.course.description);
-    for (const outcome of site.course.outcomes) {
-      expect(html).toContain(outcome.text);
-    }
-    expect(html).toContain(site.course.cta.label);
 
     // Footer
     for (const link of site.social) {
@@ -64,24 +64,34 @@ test.describe('static HTML carries all content', () => {
 test.describe('with JavaScript disabled', () => {
   test.use({ javaScriptEnabled: false });
 
-  test('all five sections remain readable (spec edge case)', async ({ page }) => {
+  test('every section remains readable (spec edge case)', async ({ page }) => {
     await page.goto('/');
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText(site.hero.headline);
-    await expect(page.getByText(site.team.heading)).toBeVisible();
-    await expect(page.getByText(site.team.members[0].name)).toBeVisible();
-    await expect(page.getByText(site.team.members[1].name)).toBeVisible();
-    await expect(page.getByText(site.materials.heading)).toBeVisible();
-    await expect(page.getByText(site.course.heading)).toBeVisible();
+    await expect(page.getByText(site.talkshow.heading, { exact: true })).toBeVisible();
+    await expect(page.getByText(site.talkshow.date.time)).toBeVisible();
+    await expect(page.getByRole('heading', { name: site.materials.heading, exact: true })).toBeVisible();
 
-    // Every achievement is readable without scripting.
-    for (const member of site.team.members) {
-      for (const achievement of member.achievements) {
-        await expect(page.getByText(achievement.text)).toBeVisible();
+    // Every speaker and achievement is readable without scripting. Cards past
+    // the first sit further along the strip, which still scrolls natively.
+    for (const speaker of site.talkshow.speakers) {
+      const name = page.getByRole('heading', { name: speaker.name });
+      // DOM scrollIntoView, not Playwright's: inside the scroll-snap strip,
+      // WebKit snaps each of Playwright's retry alignments back, so the
+      // element never counts as stable.
+      await name.evaluate((el) => el.scrollIntoView({ block: 'center', inline: 'nearest' }));
+      await expect(name).toBeVisible();
+      // Scoped to the card: some achievements are shared by two speakers.
+      const card = page.locator('article').filter({ has: name });
+      for (const achievement of speaker.achievements) {
+        const node = card.getByText(achievement, { exact: true });
+        await node.evaluate((el) => el.scrollIntoView({ block: 'center', inline: 'nearest' }));
+        await expect(node).toBeVisible();
       }
     }
 
-    // The CTA is present and visible even though its island never hydrated.
-    await expect(page.getByRole('button', { name: site.course.cta.label })).toBeVisible();
+    // Script-only controls stay out of the way.
+    await expect(page.locator('[data-carousel-controls]')).toBeHidden();
+    await expect(page.locator('[data-countdown-timer]')).toBeHidden();
   });
 });

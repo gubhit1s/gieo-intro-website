@@ -2,10 +2,11 @@
 /**
  * Free materials — User Story 4 (FR-013 … FR-016).
  *
- * A preview of the post library, laid out like a literary publication: the
- * first post is featured, up to two more follow as a quieter list, and
- * whitespace rather than card borders separates them. The full library is its
- * own page at /tai-lieu.
+ * A preview of the post library: up to six posts as a grid of equal cards,
+ * newest first. One column on phones, two from 640px, three from 1024px.
+ * It is a wrapping flex row rather than a CSS grid so that a short last row
+ * sits centred instead of hanging off the left. The full library is its own
+ * page at /tai-lieu.
  *
  * Entries arrive as props (see src/pages/index.astro) rather than being read
  * from the content collection here, so the section renders in unit tests.
@@ -21,18 +22,18 @@ import Daisy from '~/assets/svg/plants/Daisy.astro';
 import Lavender from '~/assets/svg/plants/Lavender.astro';
 
 interface Props {
-  /** Posts in display order. The first is featured; at most three show. */
+  /** Posts in display order; at most six show. */
   entries: readonly MaterialEntry[];
 }
 
-const [featured, ...rest] = Astro.props.entries.slice(0, 3);
+const shown = Astro.props.entries.slice(0, 6);
 ---
 
 {/* Background: see SECTION BACKGROUNDS in global.css. */}
 <section
   id="tai-lieu"
   aria-labelledby="gieo-materials-heading"
-  class="relative overflow-hidden bg-gradient-to-b from-sun-50 to-sprout-100 py-20 sm:py-28"
+  class="relative overflow-hidden bg-gradient-to-b from-sun-50 to-sprout-50 py-20 sm:py-28"
 >
   {/* Plants sit in the side gutters, which are only wide enough from 1280px. */}
   <div aria-hidden="true" class="pointer-events-none absolute inset-0 select-none">
@@ -70,22 +71,16 @@ const [featured, ...rest] = Astro.props.entries.slice(0, 3);
       <p class="mx-auto mt-4 max-w-2xl text-base text-ink-muted">{site.materials.subtitle}</p>
     </div>
 
-    {featured && (
-      <>
-        {/* Lead article on the left, the rest stacked beside it on wide screens. */}
-        <div class="mt-14 grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-16">
-          <ScrollReveal class="lg:col-span-7">
-            <MaterialCard entry={featured} featured />
-          </ScrollReveal>
-          <div class="flex flex-col gap-12 lg:col-span-5">
-            {rest.map((entry, index) => (
-              <ScrollReveal delay={(index + 1) * 0.1}>
-                <MaterialCard entry={entry} />
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </>
+    {shown.length > 0 && (
+      <ul class="mt-14 flex flex-wrap justify-center gap-8">
+        {shown.map((entry, index) => (
+          <li class="w-full sm:w-[calc((100%-2rem)/2)] lg:w-[calc((100%-4rem)/3)]">
+            <ScrollReveal delay={(index % 3) * 0.1} class="h-full">
+              <MaterialCard entry={entry} />
+            </ScrollReveal>
+          </li>
+        ))}
+      </ul>
     )}
 
     <div class="mt-14 text-center">

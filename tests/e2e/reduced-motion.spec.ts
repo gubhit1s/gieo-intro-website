@@ -9,16 +9,17 @@ test.describe('reduced motion', () => {
     await page.goto('/');
 
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.getByText(site.team.heading)).toBeVisible();
+    await expect(page.getByText(site.talkshow.heading, { exact: true })).toBeVisible();
 
-    for (const member of site.team.members) {
-      const name = page.getByText(member.name, { exact: true });
-      await name.scrollIntoViewIfNeeded();
+    for (const speaker of site.talkshow.speakers) {
+      const name = page.getByRole('heading', { name: speaker.name });
+      // DOM scrollIntoView: see static-content.spec.ts.
+      await name.evaluate((el) => el.scrollIntoView({ block: 'center', inline: 'nearest' }));
       await expect(name).toBeVisible();
     }
 
-    for (const outcome of site.course.outcomes) {
-      const item = page.locator('#khoa-hoc').getByText(outcome.text, { exact: true });
+    for (const part of site.talkshow.agenda) {
+      const item = page.locator('#noi-dung').getByText(part.text, { exact: true });
       await item.scrollIntoViewIfNeeded();
       await expect(item).toBeVisible();
     }
@@ -71,17 +72,14 @@ test.describe('motion allowed', () => {
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     await page.waitForTimeout(1200);
 
-    for (const outcome of site.course.outcomes) {
-      await expect(
-        page.locator('#khoa-hoc').getByText(outcome.text, { exact: true })
-      ).toBeVisible();
-    }
+    await expect(page.getByRole('heading', { name: site.materials.heading, exact: true })).toBeVisible();
+    await expect(page.getByText(site.materials.subtitle, { exact: true })).toBeVisible();
   });
 
   test('a revealed element never hides again on scroll up (FR-029)', async ({ page }) => {
     await page.goto('/');
 
-    const heading = page.getByText(site.course.heading, { exact: true });
+    const heading = page.getByRole('heading', { name: site.materials.heading, exact: true });
     await heading.scrollIntoViewIfNeeded();
     await page.waitForTimeout(900);
     await expect(heading).toBeVisible();

@@ -25,10 +25,17 @@ test.describe('responsive integrity', () => {
 
       // Achievements are the longest Vietnamese runs on the page and the most
       // likely to clip or overflow.
-      for (const member of site.team.members) {
-        for (const achievement of member.achievements) {
-          const node = page.getByText(achievement.text, { exact: true });
-          await node.scrollIntoViewIfNeeded();
+      for (const speaker of site.talkshow.speakers) {
+        // Scoped to the card: some achievements are shared by two speakers.
+        const card = page.locator('article').filter({
+          has: page.getByRole('heading', { name: speaker.name }),
+        });
+        for (const achievement of speaker.achievements) {
+          const node = card.getByText(achievement, { exact: true });
+          // DOM scrollIntoView, not Playwright's: inside the scroll-snap strip,
+          // WebKit snaps each of Playwright's retry alignments back, so the
+          // element never counts as stable.
+          await node.evaluate((el) => el.scrollIntoView({ block: 'center', inline: 'nearest' }));
           await expect(node).toBeVisible();
 
           const clipped = await node.evaluate((el) => {
@@ -45,19 +52,23 @@ test.describe('responsive integrity', () => {
     });
   }
 
-  test('team cards stack on a narrow viewport (US2 scenario 4)', async ({ page }) => {
+  test('speaker cards sit side by side in a strip that scrolls on its own', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 900 });
     await page.goto('/');
 
-    const cards = page.locator('#noi-dung article');
-    await expect(cards).toHaveCount(2);
+    const track = page.locator('[data-carousel-track]');
+    await expect(track.locator('article')).toHaveCount(site.talkshow.speakers.length);
 
-    const first = await cards.nth(0).boundingBox();
-    const second = await cards.nth(1).boundingBox();
-    expect(first).not.toBeNull();
-    expect(second).not.toBeNull();
-    // Stacked, not side by side.
-    expect(second!.y).toBeGreaterThan(first!.y + first!.height - 1);
+    // Layout boxes, not bounding boxes: the entrance animation tilts the cards.
+    const [first, second] = await track.evaluate((el) =>
+      Array.from(el.children as HTMLCollectionOf<HTMLElement>)
+        .slice(0, 2)
+        .map((card) => ({ left: card.offsetLeft, top: card.offsetTop, width: card.offsetWidth }))
+    );
+    // In a row, not stacked — and the strip overflows rather than the page.
+    expect(second!.top).toBe(first!.top);
+    expect(second!.left).toBeGreaterThanOrEqual(first!.left + first!.width);
+    expect(await track.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
   });
 
   test('no decorative artwork overlaps text (FR-027)', async ({ page }) => {
@@ -66,8 +77,8 @@ test.describe('responsive integrity', () => {
 
     // Decorations are pointer-events:none, so the reliable check is that a
     // click at the centre of each heading reaches the heading itself.
-    for (const text of [site.team.heading, site.materials.heading, site.course.heading]) {
-      const heading = page.getByText(text, { exact: true });
+    for (const text of [site.talkshow.heading, site.materials.heading]) {
+      const heading = page.getByRole('heading', { name: text, exact: true });
       await heading.scrollIntoViewIfNeeded();
       const box = await heading.boundingBox();
       expect(box).not.toBeNull();

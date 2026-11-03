@@ -1,5 +1,9 @@
 ---
-/** Footer — User Story 5 (FR-020 … FR-023). */
+/**
+ * Footer — User Story 5 (FR-020 … FR-023), plus the "Điều khoản sử dụng" link
+ * beside the © line (specs/002-terms-of-service FR-010). Every page ends with
+ * this footer, so that one link reaches the terms from anywhere.
+ */
 import { site } from '~/content/site';
 import GieoLogo from '~/assets/svg/GieoLogo.astro';
 import SocialLink from '~/components/astro/SocialLink.astro';
@@ -12,7 +16,7 @@ const year = new Date().getFullYear();
 ---
 
 {/* Background: see SECTION BACKGROUNDS in global.css. No top border — the
-    gradient carries on from the course section without a seam. */}
+    gradient carries on from the materials section without a seam. */}
 <footer
   id="lien-he"
   aria-labelledby="gieo-footer-heading"
@@ -54,8 +58,17 @@ const year = new Date().getFullYear();
       ))}
     </ul>
 
-    <p class="text-xs text-ink-muted">
-      © {year} {site.brand.name}
+    <p class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-ink-muted">
+      <span>
+        © {year} {site.brand.name}
+      </span>
+      <span aria-hidden="true">·</span>
+      <a
+        href={site.legal.termsHref}
+        class="rounded-sm underline-offset-2 hover:text-sprout-800 hover:underline"
+      >
+        {site.legal.termsLabel}
+      </a>
     </p>
   </div>
 </footer>

@@ -4,8 +4,8 @@ import { site } from '~/content/site';
 /**
  * Executable form of contracts/content-schema.md § Test contract.
  *
- * The team achievements asserted here are real competition records belonging to
- * two named people. These assertions exist so an accidental edit to site.ts
+ * The talkshow speakers' achievements asserted here are real competition records
+ * belonging to named people. These assertions exist so an accidental edit to site.ts
  * fails CI rather than shipping a false public claim about someone's results.
  */
 
@@ -30,6 +30,13 @@ describe('brand and hero', () => {
     expect(site.hero.headline).toBe('Gieo một cách đọc, ươm một cách nghĩ.');
   });
 
+  it('has the two hero actions: free materials, then the talkshow', () => {
+    expect(site.hero.actions.map((action) => [action.label, action.href])).toEqual([
+      ['Tài liệu miễn phí', '#tai-lieu'],
+      ['Talkshow của Gieo tối Thứ Bảy (07/11)', '#noi-dung'],
+    ]);
+  });
+
   it('has two labelled hero actions that point at in-page anchors', () => {
     expect(site.hero.actions).toHaveLength(2);
     for (const action of site.hero.actions) {
@@ -39,48 +46,84 @@ describe('brand and hero', () => {
   });
 });
 
-describe('team section (FR-008, FR-010, FR-011)', () => {
-  it('is headed "Chúng mình là"', () => {
-    expect(site.team.heading).toBe('Chúng mình là');
+describe('talkshow section', () => {
+  const t = site.talkshow;
+
+  it('names the event and its date', () => {
+    expect(t.heading).toBe('Ươm mầm cùng GIEO');
+    expect(t.date.startsAt).toBe('2026-11-07T19:30:00+07:00');
+    expect(t.date.endsAt).toBe('2026-11-07T21:30:00+07:00');
+    expect(t.date.weekday).toBe('Thứ Bảy');
+    expect(Date.parse(t.date.endsAt)).toBeGreaterThan(Date.parse(t.date.startsAt));
   });
 
-  it('has exactly two members with the correct names', () => {
-    expect(site.team.members).toHaveLength(2);
-    expect(site.team.members[0].name).toBe('Nguyễn Thị Hà Giang');
-    expect(site.team.members[1].name).toBe('Nguyễn Hồng Bảo Quyên');
+  it('lists the three parts of the programme in order', () => {
+    expect(t.agenda.map((part) => part.name)).toEqual(['GIEO', 'NẢY', 'ĐÁP']);
   });
 
-  it("lists all four of Hà Giang's achievements verbatim", () => {
-    const texts = site.team.members[0].achievements.map((a) => a.text);
-    expect(texts).toHaveLength(4);
-    expect(texts).toEqual([
-      'Giải nhì Ngữ văn kỳ thi chọn học sinh giỏi cấp quốc gia năm học 2020-2021',
-      'Giải nhất Ngữ văn kỳ thi chọn học sinh giỏi cấp tỉnh 2020-2021',
-      'Huy chương bạc trại hè năm 2020-2021',
-      'Từng là phóng viên báo VTV và báo Tuổi Trẻ',
+  it('has the host first, then three speakers', () => {
+    expect(t.speakers.map((s) => [s.role, s.name])).toEqual([
+      ['Host', 'Hà Giang'],
+      ['Diễn giả', 'Quỳnh Phương'],
+      ['Diễn giả', 'Thu Phượng'],
+      ['Diễn giả', 'Thùy Trân'],
     ]);
   });
 
-  it("lists both of Bảo Quyên's achievements verbatim", () => {
-    const texts = site.team.members[1].achievements.map((a) => a.text);
-    expect(texts).toHaveLength(2);
-    expect(texts).toEqual([
-      '9.5 điểm Ngữ văn THPT Quốc gia 2023 — thủ khoa Văn tỉnh Lâm Đồng',
-      'Thủ khoa Ngữ văn kỳ thi chọn học sinh giỏi cấp tỉnh 2020-2021',
-    ]);
-  });
-
-  it('has no portraits yet, so cards render the placeholder path', () => {
-    for (const member of site.team.members) {
-      expect(member.portrait).toBeNull();
+  it('gives every speaker unique, file-safe ids and image alt text', () => {
+    const ids = t.speakers.map((s) => s.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const speaker of t.speakers) {
+      expect(speaker.id).toMatch(/^[a-z]+(-[a-z]+)*$/);
+      expect(speaker.portraitAlt.length).toBeGreaterThan(0);
     }
+  });
+
+  // Copied from each speaker's poster. Real public claims: change only when
+  // the person's record changes.
+  it('lists every achievement verbatim', () => {
+    const byId = Object.fromEntries(t.speakers.map((s) => [s.id, s.achievements]));
+    expect(byId['ha-giang']).toEqual([
+      'Giải Nhì · HSG Quốc gia Ngữ văn · Năm học 2020-2021',
+      'Giải Nhì · HSG Ngữ văn tỉnh Lâm Đồng · Năm học 2019-2020',
+      'Giải Nhất · HSG Ngữ văn tỉnh Lâm Đồng · Năm học 2020-2021',
+      'Huy chương Bạc Ngữ văn · Kỳ thi Olympic Trại hè phương Nam · Năm học 2021-2022',
+      'Tuyển thẳng trường Đại học Khoa học Xã hội và Nhân Văn, ĐHQG-HCM, ngành Báo chí',
+      'Phóng viên Đài Truyền hình Việt Nam (VTV); Cộng tác viên báo Tuổi Trẻ',
+    ]);
+    expect(byId['quynh-phuong']).toEqual([
+      'Giải Ba · HSG Quốc gia Ngữ văn · Năm học 2021-2022',
+      'Giải Nhì · HSG Quốc gia Ngữ văn · Năm học 2022-2023',
+      'Giải Nhất · HSG Ngữ văn tỉnh Lâm Đồng · Năm học 2021-2022',
+      'Giải Nhất · HSG Ngữ văn tỉnh Lâm Đồng · Năm học 2022-2023',
+      'Huy chương Vàng Ngữ văn · Kỳ thi Olympic truyền thống 30 tháng 4 · Năm học 2021-2022',
+      'Tuyển thẳng trường Đại học Sư phạm Thành phố Hồ Chí Minh, ngành Sư phạm Ngữ văn',
+    ]);
+    expect(byId['thu-phuong']).toEqual([
+      'Giải Nhì · HSG Quốc gia Ngữ văn · Năm học 2019-2020',
+      'Giải Khuyến khích · HSG Quốc gia Ngữ văn · Năm học 2020-2021',
+      'Giải Nhất · HSG Ngữ văn tỉnh Bà Rịa - Vũng Tàu · Năm học 2019-2020',
+      'Giải Nhất · HSG Ngữ văn tỉnh Bà Rịa - Vũng Tàu · Năm học 2020-2021',
+      'Tuyển thẳng ngành Báo chí · Trường ĐH KHXH&NV, ĐHQG-HCM',
+      'Phóng viên Đài Truyền hình TP.HCM (HTV) · Cộng tác viên: Tuổi Trẻ, Công an Nhân dân, Vietnamnet và Tiền Phong',
+    ]);
+    expect(byId['thuy-tran']).toEqual([
+      'Giải Ba · HSG Quốc gia Ngữ văn · Năm học 2022-2023',
+      'Giải Ba · HSG Quốc gia Ngữ văn · Năm học 2023-2024',
+      'Giải Nhất · HSG Ngữ văn tỉnh Lâm Đồng · Năm học 2022-2023',
+      'Giải Nhất · HSG Ngữ văn tỉnh Lâm Đồng · Năm học 2023-2024',
+      'Huy chương Vàng Ngữ văn · Kỳ thi Olympic truyền thống 30 tháng 4 · Năm học 2023-2024',
+      'Giải Nhất · bài luận Trại hè Toán học - Vật lý - Văn học tổ chức tại trường THPT Chuyên Lê Quý Đôn - Vũng Tàu · Năm học 2023-2024',
+      'Học sinh 3 tốt tỉnh Lâm Đồng 2023-2024',
+      'Tuyển thẳng trường Đại học Khoa học Xã hội và Nhân Văn, ĐHQG-HCM, ngành Báo chí',
+    ]);
   });
 });
 
 describe('materials section (FR-013)', () => {
-  it('is headed "Những tài liệu của chúng mình" with a subtitle', () => {
-    expect(site.materials.heading).toBe('Những tài liệu của chúng mình');
-    expect(site.materials.subtitle.length).toBeGreaterThan(0);
+  it('is headed "Kho tài liệu", with a subtitle that reads on from it', () => {
+    expect(site.materials.heading).toBe('Kho tài liệu');
+    expect(site.materials.subtitle).toBe('được chúng mình biên soạn và chia sẻ miễn phí');
   });
 
   it('labels the library page and its links', () => {
@@ -97,27 +140,10 @@ describe('materials section (FR-013)', () => {
   });
 });
 
-describe('course section (FR-017, FR-018, FR-034)', () => {
-  it('has a non-empty heading and description', () => {
-    expect(site.course.heading.length).toBeGreaterThan(0);
-    expect(site.course.description.length).toBeGreaterThan(0);
-  });
-
-  it('has at least four outcomes', () => {
-    expect(site.course.outcomes.length).toBeGreaterThanOrEqual(4);
-  });
-
-  it('includes the four outcomes named in FR-018 verbatim', () => {
-    const texts = site.course.outcomes.map((outcome) => outcome.text);
-    expect(texts).toContain('Kỹ năng liên tưởng tác phẩm');
-    expect(texts).toContain('Kỹ năng phản đề');
-    expect(texts).toContain('Lý luận văn học');
-    expect(texts).toContain('Tài liệu được biên soạn bởi cựu học sinh giỏi Văn');
-  });
-
-  it('has a labelled but inert call to action', () => {
-    expect(site.course.cta.label.length).toBeGreaterThan(0);
-    expect(site.course.cta.destination).toBeNull();
+describe('header navigation', () => {
+  it('has the library link and a talkshow button, and no course link', () => {
+    expect(site.nav.links.map((link) => link.label)).toEqual(['Kho tài liệu']);
+    expect(site.nav.cta).toEqual({ label: 'Talkshow miễn phí', href: '#noi-dung' });
   });
 });
 
@@ -132,6 +158,21 @@ describe('social links (FR-021, FR-022)', () => {
       expect(link.label.length).toBeGreaterThan(0);
       expect(link.url).toMatch(/^https:\/\//);
     }
+  });
+});
+
+describe('contact and legal (002 FR-005, FR-010)', () => {
+  it('defaults the contact email to the owner’s address', () => {
+    expect(site.contact.email).toBe('tranthaiminh098@gmail.com');
+  });
+
+  it('links to the terms page under its Vietnamese title', () => {
+    expect(site.legal.termsHref).toBe('/dieu-khoan-su-dung');
+    expect(site.legal.termsLabel).toBe('Điều khoản sử dụng');
+  });
+
+  it('mentions the commercial-use restriction in the post notice', () => {
+    expect(site.legal.postNotice).toContain('thương mại');
   });
 });
 
@@ -156,8 +197,8 @@ describe('content hygiene across the whole module', () => {
 
   it('preserves Vietnamese diacritics in the densest strings', () => {
     // If the file were saved as anything but UTF-8, these would not round-trip.
-    expect(site.team.members[0].achievements[0]!.text).toContain('Ngữ văn');
-    expect(site.team.members[1].achievements[0]!.text).toContain('Lâm Đồng');
+    expect(site.talkshow.speakers[0]!.achievements[0]).toContain('Ngữ văn');
+    expect(site.talkshow.speakers[1]!.achievements[2]).toContain('Lâm Đồng');
     expect(site.hero.headline).toContain('ươm một cách nghĩ');
   });
 });

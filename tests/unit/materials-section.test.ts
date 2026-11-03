@@ -8,15 +8,15 @@ import type { MaterialEntry } from '~/content/types';
 
 /** Materials section rendering (FR-013 … FR-016). */
 describe('MaterialsSection', () => {
-  // Fixture entries in the shape src/lib/posts.ts produces from the Markdown
-  // posts. Four of them, to prove the section caps the preview at three.
-  const entries: MaterialEntry[] = [1, 2, 3, 4].map((n) => ({
+  // Fixture entries in the shape src/lib/posts.ts produces from the posts.
+  // Seven of them, to prove the section caps the grid at six.
+  const entries: MaterialEntry[] = [1, 2, 3, 4, 5, 6, 7].map((n) => ({
     id: `bai-${n}`,
     title: `Bài viết số ${n}`,
     description: `Tóm tắt bài viết số ${n}.`,
     href: `/tai-lieu/bai-${n}`,
   }));
-  const shown = entries.slice(0, 3);
+  const shown = entries.slice(0, 6);
 
   let html: string;
 
@@ -26,27 +26,25 @@ describe('MaterialsSection', () => {
   });
 
   it('renders the heading and subtitle (FR-013)', () => {
-    expect(html).toContain('Những tài liệu của chúng mình');
+    expect(html).toContain(site.materials.heading);
     expect(html).toContain(site.materials.subtitle);
     expect(html).toMatch(/<h2/);
   });
 
-  it('previews the first three posts with title and summary', () => {
+  it('shows the first six posts with title and summary', () => {
     for (const entry of shown) {
       expect(html).toContain(entry.title);
       expect(html).toContain(entry.description);
     }
-    expect(html).not.toContain(entries[3]!.title);
+    expect(html).not.toContain(entries[6]!.title);
   });
 
-  it('features the first entry ahead of the others', () => {
-    const [featured, ...rest] = shown;
-    const featuredAt = html.indexOf(featured!.title);
-    for (const entry of rest) {
-      expect(featuredAt).toBeLessThan(html.indexOf(entry.title));
-    }
-    // Only the lead article gets the large title.
-    expect(html.match(/text-4xl/g) ?? []).toHaveLength(2); // section h2 + featured h3
+  it('lays the posts out as equal cards in a list, in order', () => {
+    expect(html.match(/<li/g) ?? []).toHaveLength(shown.length);
+    const positions = shown.map((entry) => html.indexOf(entry.title));
+    expect(positions).toEqual([...positions].sort((x, y) => x - y));
+    // Every card uses the same title size: no featured post any more.
+    expect(html.match(/<h3[^>]*text-xl/g) ?? []).toHaveLength(shown.length);
   });
 
   it('links every entry to its post page, and the section to the library', () => {
@@ -84,8 +82,14 @@ describe('SiteFooter', () => {
   });
 
   it('renders exactly two social links (FR-021)', () => {
-    const anchors = html.match(/<a\s/g) ?? [];
+    // External links only: the footer also links to the terms page (002 FR-010).
+    const anchors = html.match(/<a\s[^>]*href="https:\/\//g) ?? [];
     expect(anchors).toHaveLength(2);
+  });
+
+  it('links to the terms page (002 FR-010)', () => {
+    expect(html).toContain(`href="${site.legal.termsHref}"`);
+    expect(html).toContain(site.legal.termsLabel);
   });
 
   it('opens every social link in a new tab with a safe rel (FR-023)', () => {
