@@ -20,7 +20,9 @@ import WildFlower from '~/assets/svg/plants/WildFlower.astro';
 import Lavender from '~/assets/svg/plants/Lavender.astro';
 import { site } from '~/content/site';
 import type { MaterialEntry, Post } from '~/content/types';
-import { formatPostDate, getPosts, resolveCover, toMaterialEntry } from '~/lib/posts';
+import { formatPostDate, getPosts, postHref, resolveCover, toMaterialEntry } from '~/lib/posts';
+import { absoluteUrl, article } from '~/lib/seo';
+import { getImage } from 'astro:assets';
 
 export function getStaticPaths() {
   const posts = getPosts();
@@ -43,9 +45,21 @@ interface Props {
 
 const { post, others } = Astro.props;
 const cover = resolveCover(post);
+
+const coverForSearch = await getImage({ src: cover.image, width: 1200, format: 'jpeg' });
+const structuredData = [
+  article(post, absoluteUrl(postHref(post.slug)), absoluteUrl(coverForSearch.src)),
+];
 ---
 
-<BaseLayout title={`${post.title} — ${site.brand.name}`} description={post.summary}>
+<BaseLayout
+  title={`${post.title} — ${site.seo.siteName}`}
+  description={post.summary}
+  image={{ src: cover.image, alt: cover.alt }}
+  type="article"
+  publishedAt={post.publishedAt}
+  structuredData={structuredData}
+>
   <SiteHeader slot="header" onHome={false} current="/tai-lieu" />
 
   {/* id="noi-dung" is the skip link's target on every page (BaseLayout). */}

@@ -17,7 +17,7 @@ import { terms } from '~/content/terms';
 import { formatPostDate } from '~/lib/posts';
 ---
 
-<BaseLayout title={`${terms.title} — ${site.brand.name}`} description={terms.description}>
+<BaseLayout title={`${terms.title} — ${site.seo.siteName}`} description={terms.description}>
   <SiteHeader slot="header" onHome={false} />
 
   {/* id="noi-dung" is the skip link's target on every page (BaseLayout). */}

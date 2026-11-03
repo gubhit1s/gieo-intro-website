@@ -1,0 +1,17 @@
+// Cloudflare Workers deployment: the site is fully static, so the Worker only
+// serves the built files in ./dist — there is no server code.
+//
+// Cloudflare's Git integration (Workers Builds) runs `npm run build`, then
+// `npx wrangler deploy`, which reads this file. `name` must match the Worker's
+// name in the dashboard.
+{
+  "name": "gieo-intro-website",
+  "compatibility_date": "2026-11-03",
+  "assets": {
+    "directory": "./dist",
+    // Pages are built as tai-lieu.html and served as /tai-lieu (see
+    // astro.config.mjs); a request for /tai-lieu/ redirects to /tai-lieu, so
+    // each page has exactly one address — the canonical one.
+    "html_handling": "drop-trailing-slash"
+  }
+}

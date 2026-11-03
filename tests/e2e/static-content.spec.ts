@@ -16,8 +16,15 @@ test.describe('static HTML carries all content', () => {
     expect(response.ok()).toBe(true);
     const html = await response.text();
 
-    // Hero
-    expect(html).toContain(site.hero.headline);
+    // Hero. The headline is split into one element per word for its entrance
+    // animation, so check its words appear in order rather than as one string.
+    const words = site.hero.headline.split(' ');
+    let from = 0;
+    for (const word of words) {
+      const at = html.indexOf(word, from);
+      expect(at, `headline word "${word}"`).toBeGreaterThanOrEqual(0);
+      from = at + word.length;
+    }
     expect(html).toContain(site.brand.name);
 
     // Talkshow — the event facts, then every speaker and achievement

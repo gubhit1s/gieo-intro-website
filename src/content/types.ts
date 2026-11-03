@@ -22,6 +22,22 @@ export interface Brand {
   readonly tagline: string;
 }
 
+/**
+ * What search engines and link previews (Facebook, Zalo…) see. Page titles
+ * end in `— <siteName>`: the full name is what people search for.
+ */
+export interface SeoContent {
+  readonly siteName: string;
+  /** <title> of the home page. */
+  readonly homeTitle: string;
+  /** Meta description of the home page; aim for 120–160 characters. */
+  readonly homeDescription: string;
+  /** Meta description of the /tai-lieu library page. */
+  readonly libraryDescription: string;
+  /** Alt text of the default preview image (the hero illustration). */
+  readonly defaultImageAlt: string;
+}
+
 export interface Hero {
   /** One sentence, Vietnamese, no line breaks — wrapping is the layout's job (FR-005). */
   readonly headline: string;
@@ -302,6 +318,7 @@ export interface TermsOfUse {
 
 export interface SiteContent {
   readonly brand: Brand;
+  readonly seo: SeoContent;
   readonly nav: Navigation;
   readonly hero: Hero;
   readonly talkshow: TalkshowSectionContent;

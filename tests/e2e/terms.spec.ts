@@ -15,7 +15,7 @@ test.describe('terms page', () => {
   test('renders the title, date, eight numbered sections and two email links', async ({ page }) => {
     await page.goto(TERMS);
 
-    await expect(page).toHaveTitle(`${terms.title} — ${site.brand.name}`);
+    await expect(page).toHaveTitle(`${terms.title} — ${site.seo.siteName}`);
     await expect(page.locator('h1')).toHaveText(terms.title);
 
     const headings = page.locator('#noi-dung h2');

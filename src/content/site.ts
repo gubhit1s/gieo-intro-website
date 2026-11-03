@@ -23,6 +23,16 @@ export const site = {
     tagline: 'Gieo chữ, ươm mầm văn chương',
   },
 
+  seo: {
+    siteName: 'Học Văn Cùng GIEO',
+    homeTitle: 'Học Văn Cùng GIEO — Ôn thi HSG Ngữ văn, tài liệu miễn phí',
+    homeDescription:
+      'Học Văn Cùng GIEO chia sẻ phương pháp ôn thi học sinh giỏi Ngữ văn, tài liệu lý luận văn học miễn phí và talkshow cùng các cựu học sinh giỏi Quốc gia.',
+    libraryDescription:
+      'Tài liệu Ngữ văn miễn phí của Học Văn Cùng GIEO: lý luận văn học, nghị luận xã hội và kinh nghiệm ôn thi học sinh giỏi.',
+    defaultImageAlt: 'Một bạn nữ ngồi đọc sách trên tấm thảm dưới tán cây mùa thu',
+  },
+
   nav: {
     label: 'Điều hướng chính',
     homeLabel: 'Gieo — về đầu trang',

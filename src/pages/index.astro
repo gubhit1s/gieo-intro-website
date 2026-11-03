@@ -13,11 +13,18 @@ import TalkshowSection from '~/sections/TalkshowSection.astro';
 import MaterialsSection from '~/sections/MaterialsSection.astro';
 import SiteFooter from '~/sections/SiteFooter.astro';
 import { getPosts, toMaterialEntry } from '~/lib/posts';
+import { absoluteUrl, homeGraph, talkshowEvent } from '~/lib/seo';
+import { getImage } from 'astro:assets';
+import talkshowPoster from '~/assets/images/talkshow/poster-main.jpg';
 
 const materials = getPosts().map(toMaterialEntry);
+
+// Structured data: who Gieo is, plus the talkshow as an event Google can list.
+const poster = await getImage({ src: talkshowPoster, width: 1080, format: 'jpeg' });
+const structuredData = [homeGraph(), talkshowEvent(absoluteUrl(poster.src))];
 ---
 
-<BaseLayout>
+<BaseLayout structuredData={structuredData}>
   <SiteHeader slot="header" />
   <HeroSection />
   <TalkshowSection />

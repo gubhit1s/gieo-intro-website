@@ -14,8 +14,8 @@ const entries = getPosts().map(toMaterialEntry);
 ---
 
 <BaseLayout
-  title={`${site.materials.library.heading} — ${site.brand.name}`}
-  description={site.materials.subtitle}
+  title={`${site.materials.library.heading} — ${site.seo.siteName}`}
+  description={site.seo.libraryDescription}
 >
   <SiteHeader slot="header" onHome={false} current="/tai-lieu" />
 
