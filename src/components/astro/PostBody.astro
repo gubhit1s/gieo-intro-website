@@ -52,16 +52,18 @@ const { blocks } = Astro.props;
             <p>— {block.author}</p>
           </blockquote>
         );
+      // Notes read as ordinary paragraphs for now — no highlighted box. They
+      // stay a separate block type so a post can style them its own way later.
       case 'note':
         return (
-          <aside class="post-note">
+          <p>
             {block.lead && (
               <>
                 <strong>{block.lead}</strong>{' '}
               </>
             )}
             {block.text}
-          </aside>
+          </p>
         );
     }
   })}

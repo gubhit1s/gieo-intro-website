@@ -86,7 +86,9 @@ describe('PostBody', () => {
     // Poetry keeps its line break; quote marks hug the words.
     expect(html).toMatch(/“Dòng một<br[^>]*>Dòng hai”/);
     expect(html).toContain('— Nhà thơ');
-    expect(html).toMatch(/<aside[^>]*class="post-note"[^>]*>Ghi nhớ\.<\/aside>/);
+    // Notes are plain paragraphs — no highlighted box.
+    expect(html).toMatch(/<p[^>]*>Ghi nhớ\.<\/p>/);
+    expect(html).not.toContain('<aside');
     expect(html).toMatch(/<strong[^>]*>Có thể khái quát:<\/strong> Kết luận\./);
   });
 });

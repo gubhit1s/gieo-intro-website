@@ -194,7 +194,10 @@ export type PostBlock =
     }
   /** One entry per line of the quotation (poetry keeps its line breaks). */
   | { readonly type: 'quote'; readonly lines: readonly string[]; readonly author: string }
-  /** A highlighted key takeaway; `lead` is an optional label before it, e.g. "Có thể khái quát:". */
+  /**
+   * A key takeaway or tip; `lead` is an optional bold label before it, e.g.
+   * "Có thể khái quát:". Rendered as a plain paragraph for now (PostBody).
+   */
   | { readonly type: 'note'; readonly lead?: string; readonly text: string };
 
 export interface Post {

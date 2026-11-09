@@ -279,27 +279,6 @@
     color: var(--color-print-muted);
   }
 
-  /* A key takeaway, written in Markdown as <aside class="post-note">. */
-  .post-body .post-note {
-    margin-block: 2rem;
-    border-radius: 1.5rem;
-    background-color: var(--color-sun-100);
-    padding: 1.5rem 1.75rem;
-    font-family: var(--font-serif);
-    font-size: 1.15rem;
-    font-style: italic;
-    font-weight: 500;
-    line-height: 1.7;
-    color: var(--color-sprout-900);
-  }
-
-  /* A note's label ("Có thể khái quát:") — upright, in the earth accent. */
-  .post-body .post-note strong {
-    font-style: normal;
-    font-weight: 700;
-    color: var(--color-bark-700);
-  }
-
   @media (min-width: 640px) {
     .post-body h2 {
       font-size: 1.75rem;
