@@ -14,7 +14,6 @@ import '@fontsource-variable/playpen-sans/wght.css';
 // notes (the italic file only downloads on pages that use italic).
 import '@fontsource-variable/literata/opsz.css';
 import '@fontsource-variable/literata/opsz-italic.css';
-import '@fontsource/courgette/400.css';
 import '@fontsource/be-vietnam-pro/400.css';
 import '@fontsource/be-vietnam-pro/600.css';
 import '~/styles/global.css';
@@ -65,7 +64,9 @@ const toJson = (data: Record<string, unknown>) => JSON.stringify(data).replace(/
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* The drop mark from the logo alone — "gieo" is unreadable at 16px. */}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />

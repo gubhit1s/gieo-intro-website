@@ -97,7 +97,7 @@ const agendaIcons = { gieo: FallingSeed, nay: Sprout, dap: WildFlower } as const
   <div class="section-shell relative z-10">
     {/* ── Heading ─────────────────────────────────────────────── */}
     <div class="flex flex-col items-center text-center">
-      <p class="inline-flex items-center gap-2 rounded-full bg-sprout-700 px-4 py-1 text-sm font-semibold uppercase tracking-[0.12em] text-white">
+      <p class="inline-flex items-center gap-2 rounded-full bg-sprout-700 px-4 py-1 text-sm font-semibold text-white">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -188,7 +188,7 @@ const agendaIcons = { gieo: FallingSeed, nay: Sprout, dap: WildFlower } as const
               <span class="text-base font-semibold text-sprout-700">{t.date.time}</span>
             </span>
           </time>
-          <span class="talkshow-sticker inline-flex h-20 w-20 -rotate-12 items-center justify-center rounded-full bg-sun-300 p-2 text-center text-sm font-bold uppercase leading-tight text-bark-800 shadow-md ring-4 ring-sun-100">
+          <span class="talkshow-sticker inline-flex h-20 w-20 -rotate-12 items-center justify-center rounded-full bg-sun-300 p-2 text-center text-sm font-bold leading-tight text-bark-800 shadow-md ring-4 ring-sun-100">
             {t.freeBadge}
           </span>
         </div>
@@ -196,7 +196,7 @@ const agendaIcons = { gieo: FallingSeed, nay: Sprout, dap: WildFlower } as const
         <dl class="mt-8 grid gap-x-6 gap-y-3 sm:grid-cols-[auto_1fr]">
           {t.details.map((detail) => (
             <div class="contents">
-              <dt class="text-sm font-semibold uppercase tracking-wide text-sprout-700 sm:pt-0.5">
+              <dt class="text-sm font-semibold text-sprout-700 sm:pt-0.5">
                 {detail.label}
               </dt>
               <dd class="-mt-2 text-base text-ink sm:mt-0">{detail.value}</dd>

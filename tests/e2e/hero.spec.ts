@@ -17,10 +17,12 @@ test.describe('hero — first impression', () => {
     expect(box).not.toBeNull();
     expect(box!.y).toBeLessThan(800);
 
-    // Brand name and mark live in the sticky header, above the hero.
+    // The logo (mark + "gieo" wordmark, one drawing) lives in the sticky
+    // header, above the hero; its link carries the brand name.
     const banner = page.getByRole('banner');
-    await expect(banner.getByText(site.brand.name, { exact: true })).toBeInViewport();
-    await expect(banner.locator('svg').first()).toBeInViewport();
+    const home = banner.getByRole('link', { name: site.nav.homeLabel });
+    await expect(home).toBeInViewport();
+    await expect(home.locator('svg')).toBeInViewport();
   });
 
   test('the headline entrance settles within 1 second (FR-006)', async ({ page }) => {

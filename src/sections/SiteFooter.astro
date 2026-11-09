@@ -4,8 +4,12 @@
  * beside the © line (specs/002-terms-of-service FR-010). Every page ends with
  * this footer, so that one link reaches the terms from anywhere.
  */
+import { Image } from 'astro:assets';
 import { site } from '~/content/site';
-import GieoLogo from '~/assets/svg/GieoLogo.astro';
+// Served as a cached file rather than inlined: it is below the fold, and at
+// ~11 KB (the slogan is drawn as paths) it would otherwise ride along in
+// every page's HTML.
+import gieoLogoSlogan from '~/assets/brand/gieo-logo-slogan.svg';
 import SocialLink from '~/components/astro/SocialLink.astro';
 import WildFlower from '~/assets/svg/plants/WildFlower.astro';
 import Tulip from '~/assets/svg/plants/Tulip.astro';
@@ -42,13 +46,18 @@ const year = new Date().getFullYear();
   </div>
 
   <div class="section-shell relative z-10 flex flex-col items-center gap-8 text-center">
-    <div class="flex flex-col items-center gap-3">
-      <GieoLogo size={40} decorative class="text-sprout-600" />
-      <h2 id="gieo-footer-heading" class="font-brand text-4xl text-sprout-800">
-        {site.brand.name}
-      </h2>
-      <p class="text-sm text-ink-muted">{site.brand.tagline}</p>
-    </div>
+    {/* The logo with its slogan IS the heading: its alt text names the brand
+        and reads the slogan, so nothing is lost to assistive tech. */}
+    <h2 id="gieo-footer-heading">
+      <Image
+        src={gieoLogoSlogan}
+        alt={`${site.brand.name} — ${site.brand.tagline}`}
+        width={260}
+        height={132}
+        loading="lazy"
+        class="h-auto w-56 sm:w-64"
+      />
+    </h2>
 
     <ul class="flex items-center gap-4">
       {site.social.map((link) => (

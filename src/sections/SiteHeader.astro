@@ -20,7 +20,8 @@
  */
 import { site } from '~/content/site';
 import type { NavLink } from '~/content/types';
-import GieoLogo from '~/assets/svg/GieoLogo.astro';
+// Inlined (Astro SVG import), so the logo paints with the HTML — no request.
+import GieoLogo from '~/assets/brand/gieo-logo.svg';
 
 interface Props {
   onHome?: boolean;
@@ -35,22 +36,21 @@ const resolve = (href: string) => (!onHome && href.startsWith('#') ? `/${href}` 
 <header class="sticky top-0 z-40 border-b border-sprout-200/70 bg-sprout-50/90 backdrop-blur">
   <div class="section-shell grid grid-cols-[1fr_auto] sm:flex sm:h-16 sm:items-center sm:gap-2">
     <div class="flex h-14 items-center sm:mr-auto sm:h-auto">
-      {/* Mark + wordmark lockup. The mark is decorative; the link's
-          aria-label starts with the visible name, so speech users can say
-          "Gieo" to activate it. */}
+      {/* Mark + wordmark logo. The drawing is decorative; the link's
+          aria-label starts with the name the logo shows, so speech users can
+          say "Gieo" to activate it. */}
       <a
         href={onHome ? '#gioi-thieu' : '/'}
         aria-label={site.nav.homeLabel}
-        class="group -ml-1 flex items-center gap-1.5 rounded-full py-1 pl-1 pr-3"
+        class="group -ml-1 flex items-center rounded-lg px-1 py-1.5"
       >
         <GieoLogo
-          size={44}
-          decorative
-          class="text-sprout-600 transition-transform group-hover:-translate-y-0.5"
+          width={106}
+          height={40}
+          aria-hidden="true"
+          focusable="false"
+          class="h-9 w-auto transition-transform group-hover:-translate-y-0.5 sm:h-10"
         />
-        <span class="font-brand text-[1.75rem] leading-none text-sprout-800">
-          {site.brand.name}
-        </span>
       </a>
     </div>
 

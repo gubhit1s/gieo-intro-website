@@ -14,8 +14,8 @@
  *   sprout  growth, structure, primary actions, all headings.
  *   sun     sunlight and ripe grain: flowers, seeds, icon badges, the
  *           secondary hero button. Use sparingly, as highlights.
- *   bark    earth: the logo's soil mound, flower centres and small labels.
- *           Never a section background.
+ *   bark    earth: flower centres and small labels. Never a section
+ *           background.
  *   blossom, lavender   petal colours for the decorative flowers, nothing else.
  *   sky     the post summary (lede) under a post title: sky-300 for its rule,
  *           sky-700 for its text. Same split as the other hues — 300 is
@@ -37,16 +37,21 @@
  * pairing fails, darken the TEXT token. Do not suppress the rule.
  */
 @theme {
-  --color-sprout-50: #f4faf0;
-  --color-sprout-100: #e6f4dc;
-  --color-sprout-200: #cde9ba;
-  --color-sprout-300: #aeda93;
-  --color-sprout-400: #8cc765;
-  --color-sprout-500: #6fb043;
-  --color-sprout-600: #4e7f2d;
-  --color-sprout-700: #3d6523;
-  --color-sprout-800: #2f4d1b;
-  --color-sprout-900: #1f3313;
+  /* Sprout is built on the logo's greens (src/assets/brand), which run from
+     #0c970d at the top of the mark to #0d6404 at the bottom: 500 sits near
+     the bright end, 700 IS the deep end. The logo's mid green (#238b07) is
+     4.4:1 on white — just under the body-text floor — so text uses 600+.
+     The logo keeps its gradient; the UI uses these as solid colours only. */
+  --color-sprout-50: #f2f9ee;
+  --color-sprout-100: #e2f2d9;
+  --color-sprout-200: #c4e5b4;
+  --color-sprout-300: #9dd386;
+  --color-sprout-400: #6cbd55;
+  --color-sprout-500: #26960f;
+  --color-sprout-600: #1b7c0b;
+  --color-sprout-700: #106704;
+  --color-sprout-800: #0e4f08;
+  --color-sprout-900: #0c3a08;
 
   --color-sun-50: #fffaeb;
   --color-sun-100: #fdf0cc;
@@ -104,10 +109,6 @@
      faint at body size even on near-black text. */
   --font-serif: 'Literata Variable', Georgia, 'Times New Roman', serif;
   --font-body: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
-  /* The "Gieo" wordmark only. Courgette ships no Vietnamese glyphs and a
-     script face gets hard to read past one word, so never use font-brand for
-     headings or Vietnamese copy. */
-  --font-brand: 'Courgette', 'Segoe Script', cursive;
 }
 
 @layer base {

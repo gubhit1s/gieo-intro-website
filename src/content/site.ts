@@ -20,7 +20,7 @@ import type { SiteContent } from './types';
 export const site = {
   brand: {
     name: 'Gieo',
-    tagline: 'Gieo chữ, ươm mầm văn chương',
+    tagline: 'Gieo tri thức, gặt yêu thương',
   },
 
   seo: {
@@ -202,7 +202,7 @@ export const site = {
 
   // Temporary default until Gieo has its own address. Every page that shows
   // the email reads it from here (002 FR-006).
-  contact: { email: 'tranthaiminh098@gmail.com' },
+  contact: { email: 'hello.gieoeducation@gmail.com' },
 
   legal: {
     termsLabel: 'Điều khoản sử dụng',
